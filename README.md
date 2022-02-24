@@ -18,4 +18,4 @@
 ## Save your Style
 ![Save](https://user-images.githubusercontent.com/42710260/155544233-4843f71c-7fe3-4686-b5fc-84d179fa4a56.png)
 ## Discover your Collection
-![collection](https://user-images.githubusercontent.com/42710260/155544303-288252b1-3738-43c0-9a77-32a5d8a03889.png)
+![savedImage](https://user-images.githubusercontent.com/42710260/155544976-ccb531a3-d28f-4ddf-a0f2-54ac958bf6b6.png)
