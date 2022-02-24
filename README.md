@@ -1,68 +1,21 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `yarn start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `yarn build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+# Features
+- Upload and Edit your image with available dress from different compnies
+- Save them in your collection
+- Download and share on social media
+# Future Goals
+- Use AI powered dress imposition on given user image
+- order dress with different sizes
+- view and comment on other's collection, and try them
+# Snapshots
+## Login
+![login](https://user-images.githubusercontent.com/42710260/155543829-92996dca-e226-41b3-8a5c-d86b18c5b407.png)
+## Signup
+![signup](https://user-images.githubusercontent.com/42710260/155543965-e798208f-f90f-42a6-b2fb-87fbfe213eb9.png)
+## Validation
+![validation](https://user-images.githubusercontent.com/42710260/155544045-381d13fc-05ba-43eb-a8f3-5c865057e852.png)
+## Create your style
+![Create](https://user-images.githubusercontent.com/42710260/155544123-c891dd07-11d4-439e-966c-3db0f85cc8d5.png)
+## Save your Style
+![Save](https://user-images.githubusercontent.com/42710260/155544233-4843f71c-7fe3-4686-b5fc-84d179fa4a56.png)
+## Discover your Collection
+![collection](https://user-images.githubusercontent.com/42710260/155544303-288252b1-3738-43c0-9a77-32a5d8a03889.png)
