@@ -3,7 +3,7 @@
 - Save them in your collection
 - Download and share on social media
 ## Backend URL:
-  ![https://github.com/Sayan-dev/Clothes-Store-Backend](https://github.com/Sayan-dev/Clothes-Store-Backend)
+  [https://github.com/Sayan-dev/Clothes-Store-Backend](https://github.com/Sayan-dev/Clothes-Store-Backend)
 # Future Goals
 - Use AI powered dress imposition on given user image
 - order dress with different sizes
