@@ -90,9 +90,6 @@ const Auth = () => {
                     {
                         email: formState.inputs.email.value,
                         password: formState.inputs.password.value,
-                    },
-                    {
-                        "Content-Type": "application/json",
                     }
                 );
                 auth.login(
@@ -118,7 +115,7 @@ const Auth = () => {
                         "Content-Type": "multipart/form-data",
                     }
                 );
-
+                console.log(responseData);
                 auth.login(
                     responseData.userId,
                     responseData.image,

@@ -108,10 +108,10 @@ const CreateDress = (props) => {
             const response = await sendRequest(
                 "dress/uploadDress",
                 'POST',
-                {
+                JSON.stringify({
                     name: "My File A",
                     image: dataURL,
-                },
+                }),
 
                 {
                     "Content-Type": 'application/json',
