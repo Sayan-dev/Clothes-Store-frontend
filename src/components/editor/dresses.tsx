@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function Dresses({addDressHandler, catagory= 'mens'}:{addDressHandler:(uri:string, name:string, type: CompanyDress['type'], dresstype: CompanyDress['dresstype'])=>void, catagory:string}) {
+export default function Dresses({addDressHandler, catagory= 'mens'}:{addDressHandler:(uri:string, item:CompanyDress, type: CompanyDress['type'], dresstype: CompanyDress['dresstype'])=>void, catagory:string}) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [imageList,setImageList]=useState<CompanyDressObject[]>()
 
@@ -61,7 +61,7 @@ export default function Dresses({addDressHandler, catagory= 'mens'}:{addDressHan
                 <Grid container>
                     {imageList?.map((e) => (
                         <Grid className={classes.dressItem} item xs={12}>
-                            <Button onClick={()=>addDressHandler(e.cloth.image, e.cloth.name, e.cloth.type, e.cloth.dresstype)} className={classes.gridButton}>
+                            <Button onClick={()=>addDressHandler(e.cloth.image, e.cloth, e.cloth.type, e.cloth.dresstype)} className={classes.gridButton}>
                                 <CompanyImage {...e.cloth}/>
                             </Button></Grid>
                     ))}

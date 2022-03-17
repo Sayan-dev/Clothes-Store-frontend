@@ -24,6 +24,7 @@ import {
 } from "@mui/material";
 import { inherits } from "util";
 import { useRef } from "react";
+import { useAppSelector } from "../../redux/hooks";
 
 const drawerWidth = 200;
 
@@ -34,17 +35,59 @@ interface Props {
      */
     window?: () => Window;
     children: React.ReactNode;
+    saveCanvas: () => void;
 }
 
 export default function BaseLayout(props: Props) {
     const { window } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
+    const {amount} = useAppSelector(state=>state.canvasReducer)
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const pages = ["Save", "Download", "Collection"];
+    const pages = [
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Save"}
+            onClick={props.saveCanvas}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Save
+        </Button>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Download"}
+            onClick={handleDrawerToggle}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Download
+        </Button>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Collection"}
+            onClick={handleDrawerToggle}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Collection
+        </Button>,
+    ];
 
     const ResponsiveAppBar = (props: { openFile: () => {} }) => {
         const fileInput = useRef(null);
@@ -97,42 +140,39 @@ export default function BaseLayout(props: Props) {
                             display: { xs: "none", md: "flex" },
                         }}
                     >
-                        <input
-                            type="file"
-                            style={{ display: "none" }}
-                            ref={fileInput}
-                            onChange={props.openFile}
-                            accept=".jpg,.jpeg,.png"
-                        />
-                            <Button
-                                variant="outlined"
-                                color="primary"
-                                sx={{
-                                    my: 2,
-                                    mx: 5,
-                                    display: "block",
-                                }}
-                                onClick={fileSelectHandler}
-                            >
-                                Choose File
-                            </Button>
-                        {pages.map((page) => (
-                            <Button
-                                color="primary"
-                                variant="outlined"
-                                key={page}
-                                onClick={handleDrawerToggle}
-                                sx={{
-                                    my: 2,
-                                    mx: 5,
-                                    display: "block",
-                                }}
-                            >
-                                {page}
-                            </Button>
-                        ))}
+                        {pages.map((page) => page)}
                     </Box>
 
+                    <Box
+                        sx={{
+                            flexGrow: 0,
+                            display: { xs: "none", md: "flex" },
+                        }}
+                    >
+                        <Typography
+                            key={"cart_amount"}
+                            sx={{
+                                my: 3,
+                                mx: 0,
+                                display: "block",
+                            }}
+                        >
+                            $ {amount}
+                        </Typography>
+                        <Button
+                            color="primary"
+                            variant="outlined"
+                            key={"go_to_cart"}
+                            onClick={handleDrawerToggle}
+                            sx={{
+                                my: 2,
+                                mx: 5,
+                                display: "block",
+                            }}
+                        >
+                            Go to Cart
+                        </Button>
+                    </Box>
                     <Box sx={{ flexGrow: 0 }}>
                         <Avatar
                             alt="Remy Sharp"
@@ -186,11 +226,13 @@ export default function BaseLayout(props: Props) {
 
     const container =
         window !== undefined ? () => window().document.body : undefined;
-    const openFileHandler = ()=>{return ""}
+    const openFileHandler = () => {
+        return "";
+    };
     return (
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
-            <ResponsiveAppBar openFile={openFileHandler}/>
+            <ResponsiveAppBar openFile={openFileHandler} />
             <Box
                 component="nav"
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}

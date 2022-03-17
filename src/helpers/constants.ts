@@ -3,12 +3,12 @@ import { CompanyDress } from "../types/dress"
 const dressTypes = {
     mens: {
         body: {
-            left:106,
-            top: 65
+            left:100,
+            top: 68
         },
         legs: {
-            left:106,
-            top: 160
+            left:100,
+            top: 162
         },
         shoes: {
             left:110,
@@ -21,7 +21,7 @@ const dressTypes = {
     },
     womens: {
         body: {
-            left:82,
+            left:70,
             top: 68,
         },
         legs: {

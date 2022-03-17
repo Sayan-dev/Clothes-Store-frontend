@@ -31,14 +31,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 const list = [{label:"Men's Wear", value:"mens"}, {label:"Ladies Wear", value:"womens"}, {label:"Kids", value:"kids"}];
-export default function Catagories({selectCatagory}:{selectCatagory: (catagory: "mens" | "womens" | "kids")=>void}) {
+export default function Catagories({setCatagory}:{setCatagory: (catagory: "mens" | "womens" | "kids")=>void}) {
     const classes = useStyles();
     return (
         <Container>
             <div className={classes.catagoryContainer}>
                 <Grid container>
                     {list.map((e:{label:string, value:"mens" | "womens" | "kids"}) => (
-                        <Grid className={classes.catagoryItem} item xs={12}><Button onClick={()=>selectCatagory(e.value)} className={classes.gridButton}>{e.label}</Button></Grid>
+                        <Grid className={classes.catagoryItem} item xs={12}><Button onClick={()=>setCatagory(e.value)} className={classes.gridButton}>{e.label}</Button></Grid>
                     ))}
                 </Grid>
             </div>
