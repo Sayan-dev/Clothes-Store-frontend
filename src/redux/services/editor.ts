@@ -6,13 +6,15 @@ interface Editor_State {
     amount: number;
     items: CompanyDress[],
     finalImage: string;
+    catagory: CompanyDress["type"],
 }
 
 const initialState = {
     loading: false,
     amount: 0,
     items: [],
-    finalImage: ""
+    finalImage: "",
+    catagory: "mens"
 } as Editor_State;
 
 
@@ -27,9 +29,12 @@ const editorSlice = createSlice({
         removeAllItems(state, action: PayloadAction<CompanyDress>){
             state.items=[]
             state.amount = 0
+        },
+        setCatagory(state, action: PayloadAction<{catagory:CompanyDress["type"]}>){
+            state.catagory = action.payload.catagory
         }
     },
 });
 
-export const {addItemToCart, removeAllItems} = editorSlice.actions;
+export const {addItemToCart, removeAllItems, setCatagory} = editorSlice.actions;
 export default editorSlice.reducer;

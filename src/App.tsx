@@ -8,7 +8,9 @@ import AppBar from "./components/appbar/appBar";
 import { AuthContext } from "./context/auth-context";
 import { useAuth } from "./hooks/useAuth";
 import Auth from "./pages/auth";
+import Collection from "./pages/collection";
 import NewDress from "./pages/create";
+import Edit from "./pages/edit";
 import Home from "./pages/home";
 import { persistor, store } from "./redux/store";
 
@@ -16,21 +18,15 @@ function App() {
     const { token, login, logout, user } = useAuth();
     let routes;
 
-    if (!!token) {
-        routes = (
-            <Router>
-                <Redirect noThrow from="*" to="/new" />
-                <NewDress path="/new" />
-            </Router>
-        );
-    } else {
-        routes = (
-            <Router>
-                <Redirect noThrow from="*" to="/auth" />
-                <Auth path="/auth" />
-            </Router>
-        );
-    }
+    routes = (
+        <Router>
+            <Redirect noThrow from="*" to="/new" />
+            <NewDress path="/new" />
+            <Collection path="/collection"/>
+            <Edit collectionId="" path="/edit/:collectionId"/>
+            <Auth path="/auth" />
+        </Router>
+    );
 
     return (
         <AuthContext.Provider

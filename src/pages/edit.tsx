@@ -26,21 +26,27 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { AuthContext } from "../context/auth-context";
 
-export default function NewDress(props: RouteComponentProps) {
+interface CanvasProps extends RouteComponentProps {
+    collectionId: string;
+}
+export default function NewDress(props: CanvasProps) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
     const fabricCanvas = useRef(null);
     const dispatch = useAppDispatch();
     const { token } = useContext(AuthContext);
-    const { amount, catagory } = useAppSelector((state) => state.canvasReducer);
+    // const { amount, catagory } = useAppSelector((state) => state.canvasReducer);
+    const { collection } = useAppSelector((state) => state.collectionReducer);
+    const [catagory, setCatagory] = useState(
+        collection[props.collectionId]?.type
+    );
     // useEffect(() => {
     //     const item = localStorage.getItem("catagory");
     //     setCatagory(item);
     // }, []);
-    const setCatagoryHandler = (catagory: CompanyDress["type"]) => {
-        dispatch(setCatagory({ catagory }));
-        selectCatagory(catagory)
-    };
+    const navigateToNew = ()=>{
+        navigate("/new")
+    }
     const navigateToCollection=()=>{
         navigate("/collection")
     }
@@ -64,8 +70,6 @@ export default function NewDress(props: RouteComponentProps) {
     const selectCatagory = useCallback(
         (catagory: "mens" | "womens" | "kids") => {
             console.log("Hello World", catagory);
-            fabricCanvas.current.clear();
-            dispatch(removeAllItems());
             switch (catagory) {
                 case "mens":
                     fabric.Image.fromURL(
@@ -111,53 +115,28 @@ export default function NewDress(props: RouteComponentProps) {
         },
         [dispatch]
     );
-
-    const saveImageHandler = async (event: React.MouseEvent) => {
-        event.preventDefault();
-        try {
-            const dataURL = fabricCanvas.current.toDataURL();
-            const canvas = JSON.stringify(fabricCanvas.current)
-            const response = await sendRequest(
-                "dress/uploadDress",
-                "POST",
-                JSON.stringify({
-                    name: "My File A",
-                    image: dataURL,
-                    canvas_json: canvas,
-                    price:amount
-                }),
-
-                {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                }
-            );
-
-            console.log(response.data.imageKey);
-        } catch (error) {
-            console.log(error);
-        }
-    };
     useEffect(() => {
         fabricCanvas.current = new fabric.Canvas("editor_canvas", {
             controlsAboveOverlay: true,
         });
 
         fabricCanvas.current.setDimensions({ width: 300, height: 400 });
+    }, []);
 
-        // const json = '{"version":"5.2.1","objects":[{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":82,"top":68,"width":480,"height":602,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.28,"scaleY":0.38,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"https://clothes-store.s3.ap-south-1.amazonaws.com/dresses/be0c594a-85e5-4a79-81c4-8efdd9f4d134-photo.png.png?no-cors-please","crossOrigin":"anonymous","filters":[]}]}'
-        // fabricCanvas.current.loadFromJSON(json)
-    }, [catagory]);
+    useEffect(() => {
+        const json = collection[props.collectionId]?.canvas_json;
+        fabricCanvas.current.clear();
+        fabricCanvas.current.loadFromJSON(json);
+
+        // setCatagory(collection[props.collectionId]?.type);
+    }, []);
     const Editor = () => {
         return (
             <Grid container>
-                <Grid item sm={3}>
-                    <Catagories setCatagory={setCatagoryHandler} />
-                </Grid>
-                <Grid item sm={6}>
+                <Grid item sm={8}>
                     <Canvas />
                 </Grid>
-                <Grid item sm={3}>
+                <Grid item sm={4}>
                     <Dresses
                         addDressHandler={addDressHandler}
                         catagory={catagory}
@@ -166,23 +145,21 @@ export default function NewDress(props: RouteComponentProps) {
             </Grid>
         );
     };
-    const saveCanvas = async(event: React.MouseEvent) => {
-        event.preventDefault()
+    const saveEditCanvas = async (event: React.MouseEvent) => {
+        event.preventDefault();
         const canvas = JSON.stringify(fabricCanvas.current);
         try {
             const dataURL = fabricCanvas.current.toDataURL();
             console.log(canvas);
-            
-            const response = await sendRequest(
-                "dress/uploadDress",
-                "POST",
-                JSON.stringify({
-                    name: "My File A",
-                    image: dataURL,
-                    type: catagory,
-                    canvas_json: canvas,
-                    price:amount,
 
+            const response = await sendRequest(
+                `dress/updateDress/${collection[props.collectionId]?._id}`,
+                "PATCH",
+                JSON.stringify({
+                    name: "My 20 image",
+                    image: dataURL,
+                    canvas_json: canvas,
+                    price: 0,
                 }),
 
                 {
@@ -195,20 +172,32 @@ export default function NewDress(props: RouteComponentProps) {
         }
         console.log(canvas);
     };
-
     const appBarButtons = [
         <Button
             color="primary"
             variant="outlined"
-            key={"Save"}
-            onClick={saveCanvas}
+            key={"Edit"}
+            onClick={saveEditCanvas}
             sx={{
                 my: 2,
                 mx: 5,
                 display: "block",
             }}
         >
-            Save
+            Edit
+        </Button>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Create New"}
+            onClick={navigateToNew}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Create New
         </Button>,
                 <Button
                 color="primary"
@@ -225,7 +214,11 @@ export default function NewDress(props: RouteComponentProps) {
             </Button>,
     ];
     return (
-        <BaseLayout appBarButtons={appBarButtons} saveCanvas={saveCanvas}>
+        <BaseLayout
+            appBarButtons={appBarButtons}
+            saveCanvas={() => {}}
+            editCanvas={saveEditCanvas}
+        >
             <Editor />
         </BaseLayout>
     );

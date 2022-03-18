@@ -25,6 +25,8 @@ import {
 import { inherits } from "util";
 import { useRef } from "react";
 import { useAppSelector } from "../../redux/hooks";
+import { AuthContext } from "../../context/auth-context";
+import { navigate } from "@reach/router";
 
 const drawerWidth = 200;
 
@@ -35,18 +37,33 @@ interface Props {
      */
     window?: () => Window;
     children: React.ReactNode;
-    saveCanvas: () => void;
+    saveCanvas: (event: React.MouseEvent) => void;
+    editCanvas?: (event: React.MouseEvent) => void;
+    appBarButtons?: React.ReactNode[];
 }
 
 export default function BaseLayout(props: Props) {
     const { window } = props;
+    const {appBarButtons} = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const {amount} = useAppSelector(state=>state.canvasReducer)
+    const { amount } = useAppSelector((state) => state.canvasReducer);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const { isLoggedIn, logout } = React.useContext(AuthContext);
 
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+     const navigateToCollection = ()=>{
+         navigate("/collection")
+     }
     const pages = [
         <Button
             color="primary"
@@ -61,6 +78,19 @@ export default function BaseLayout(props: Props) {
         >
             Save
         </Button>,
+                <Button
+                color="primary"
+                variant="outlined"
+                key={"Edit"}
+                onClick={props.editCanvas}
+                sx={{
+                    my: 2,
+                    mx: 5,
+                    display: "block",
+                }}
+            >
+                Edit
+            </Button>,
         <Button
             color="primary"
             variant="outlined"
@@ -78,7 +108,7 @@ export default function BaseLayout(props: Props) {
             color="primary"
             variant="outlined"
             key={"Collection"}
-            onClick={handleDrawerToggle}
+            onClick={navigateToCollection}
             sx={{
                 my: 2,
                 mx: 5,
@@ -140,7 +170,7 @@ export default function BaseLayout(props: Props) {
                             display: { xs: "none", md: "flex" },
                         }}
                     >
-                        {pages.map((page) => page)}
+                        {appBarButtons?.map((button) => button)}
                     </Box>
 
                     <Box
@@ -173,12 +203,37 @@ export default function BaseLayout(props: Props) {
                             Go to Cart
                         </Button>
                     </Box>
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Avatar
-                            alt="Remy Sharp"
-                            src="/static/images/avatar/2.jpg"
-                        />
-                    </Box>
+                    {isLoggedIn ? (
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Avatar
+                                alt="Remy Sharp"
+                                src="/static/images/avatar/2.jpg"
+                                onClick={handleMenu}
+                            />
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorEl}
+                                anchorOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: "top",
+                                    horizontal: "right",
+                                }}
+                                open={Boolean(anchorEl)}
+                                onClose={handleClose}
+                            >
+                                <MenuItem onClick={handleClose}>
+                                    Profile
+                                </MenuItem>
+                                <MenuItem onClick={logout}>
+                                    Logout
+                                </MenuItem>
+                            </Menu>
+                        </Box>
+                    ) : null}
                 </Toolbar>
             </AppBar>
         );

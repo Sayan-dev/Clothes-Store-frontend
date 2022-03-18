@@ -8,3 +8,16 @@ export interface CompanyDress {
 }
 
 export type CompanyDressObject = Record<string,CompanyDress>
+
+export interface UserCollectionDress {
+    _id: string
+    name:string,
+    image: string,
+    createdAt:{type:Date},
+    price: number,
+    type: CompanyDress['type'],
+    canvas_obj_ref: CompanyDress[],
+    canvas_meta_data: string,
+    canvas_json:string,
+    userId:string
+}

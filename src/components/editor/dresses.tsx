@@ -5,6 +5,8 @@ import { Theme } from "@mui/system";
 import { useHttpClient } from "../../hooks/http-hook";
 import { CompanyDress, CompanyDressObject } from "../../types/dress";
 import CompanyImage from "./dressImage";
+import { useAppDispatch } from "../../redux/hooks";
+import { addItemToCart } from "../../redux/services/editor";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,6 +40,12 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Dresses({addDressHandler, catagory= 'mens'}:{addDressHandler:(uri:string, item:CompanyDress, type: CompanyDress['type'], dresstype: CompanyDress['dresstype'])=>void, catagory:string}) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [imageList,setImageList]=useState<CompanyDressObject[]>()
+    const dispatch = useAppDispatch()
+
+    const addDressesHandler = (item: CompanyDress)=>{
+        addDressHandler(item.image, item, item.type, item.dresstype)
+        // dispatch(addItemToCart(item))
+    }
 
     useEffect(()=>{
         const fetchImages=async()=>{
@@ -51,17 +59,16 @@ export default function Dresses({addDressHandler, catagory= 'mens'}:{addDressHan
 
         };
         fetchImages();
-    },[sendRequest, catagory]);
+    },[]);
     
     const classes = useStyles();
-    console.log(imageList)
     return (
         <Container>
             <div className={classes.dressContainer}>
                 <Grid container>
                     {imageList?.map((e) => (
                         <Grid className={classes.dressItem} item xs={12}>
-                            <Button onClick={()=>addDressHandler(e.cloth.image, e.cloth, e.cloth.type, e.cloth.dresstype)} className={classes.gridButton}>
+                            <Button onClick={()=>addDressesHandler(e.cloth)} className={classes.gridButton}>
                                 <CompanyImage {...e.cloth}/>
                             </Button></Grid>
                     ))}

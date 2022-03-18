@@ -9,7 +9,8 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist'
-import ItemReducer from './services/editor'
+import EditorReducer from './services/editor'
+import CollectionReducer from './services/collection'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
  
 const persistConfig = {
@@ -17,12 +18,19 @@ const persistConfig = {
   storage,
   blacklist: ["amount"]
 }
+
+const collectionPersistConfig = {
+  key: 'collection',
+  storage,
+}
  
-const persistedReducer = persistReducer(persistConfig, ItemReducer)
+const persistedReducer = persistReducer(persistConfig, EditorReducer)
+const persistedCollectionReducer = persistReducer(collectionPersistConfig, CollectionReducer)
  
 const store = configureStore({
   reducer: {
-    canvasReducer:persistedReducer
+    canvasReducer:persistedReducer,
+    collectionReducer: persistedCollectionReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
