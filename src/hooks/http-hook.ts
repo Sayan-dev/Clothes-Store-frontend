@@ -24,7 +24,11 @@ export const useHttpClient = () => {
             }
                 switch (method) {
                     case "GET" || "get":
-                        response = await instance.get(url);
+                        response = await instance.get(url,{
+                            headers: {
+                                ...headers,
+                            },
+                        });
                         break;
                     case "POST" || "POST":
                         response = await instance.post(url, body, {

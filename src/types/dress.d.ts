@@ -2,6 +2,7 @@ export interface CompanyDress {
     image: string;
     name: string;
     price: number;
+    isSelected?: boolean;
     type: 'mens'| 'womens' |'kids';
     dresstype: 'body' | 'legs' | 'head' | 'shoes';
     _id: string;

@@ -8,25 +8,36 @@ import AppBar from "./components/appbar/appBar";
 import { AuthContext } from "./context/auth-context";
 import { useAuth } from "./hooks/useAuth";
 import Auth from "./pages/auth";
+import Checkout from "./pages/checkout";
 import Collection from "./pages/collection";
 import NewDress from "./pages/create";
 import Edit from "./pages/edit";
 import Home from "./pages/home";
+import Order from "./pages/order";
 import { persistor, store } from "./redux/store";
 
 function App() {
     const { token, login, logout, user } = useAuth();
     let routes;
-
-    routes = (
+    console.log(token);
+    
+    if(!!token){routes = (
         <Router>
             <Redirect noThrow from="*" to="/new" />
             <NewDress path="/new" />
             <Collection path="/collection"/>
             <Edit collectionId="" path="/edit/:collectionId"/>
-            <Auth path="/auth" />
+            <Checkout path="/checkout"/>
+            <Order path="/orders"/>
         </Router>
-    );
+    );} else {
+        routes = (
+            <Router>
+                <Redirect noThrow from="*" to="/auth" />
+                <Auth path="/auth" />
+            </Router>
+        );
+    }
 
     return (
         <AuthContext.Provider

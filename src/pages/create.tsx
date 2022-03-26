@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { navigate, RouteComponentProps } from "@reach/router";
 import React, {
     useCallback,
@@ -21,10 +21,13 @@ import { useHttpClient } from "../hooks/http-hook";
 import {
     addItemToCart,
     removeAllItems,
+    setCanvasState,
     setCatagory,
+    setFinalImage,
 } from "../redux/services/editor";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { AuthContext } from "../context/auth-context";
+import { loadScript } from "../helpers/loadScript";
 
 export default function NewDress(props: RouteComponentProps) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -32,24 +35,31 @@ export default function NewDress(props: RouteComponentProps) {
     const fabricCanvas = useRef(null);
     const dispatch = useAppDispatch();
     const { token } = useContext(AuthContext);
-    const { amount, catagory } = useAppSelector((state) => state.canvasReducer);
+    const { catagory, canvas_state, amount } = useAppSelector(
+        (state) => state.canvasReducer
+    );
     // useEffect(() => {
     //     const item = localStorage.getItem("catagory");
     //     setCatagory(item);
     // }, []);
-    const setCatagoryHandler = (catagory: CompanyDress["type"]) => {
-        dispatch(setCatagory({ catagory }));
-        selectCatagory(catagory)
+    const setCatagoryHandler = (newCatagory: CompanyDress["type"]) => {
+        if (catagory !== newCatagory) {
+            dispatch(setCatagory({ catagory: newCatagory }));
+            // resetCanvas()
+
+            selectCatagory(newCatagory);
+        }
     };
-    const navigateToCollection=()=>{
-        navigate("/collection")
-    }
+    const navigateToCollection = () => {
+        navigate("/collection");
+    };
     const addDressHandler = (
         uri: string | null,
         item: CompanyDress,
         type: CompanyDress["type"],
         dresstype: CompanyDress["dresstype"]
     ) => {
+        //
         fabric.Image.fromURL(
             `${uri}?no-cors-please`,
             (img) => {
@@ -59,6 +69,13 @@ export default function NewDress(props: RouteComponentProps) {
                 fabricCanvas.current.add(oImg).renderAll();
             },
             { crossOrigin: "anonymous" }
+        );
+        dispatch(
+            addItemToCart({
+                item,
+                canvas_state: JSON.stringify(fabricCanvas.current),
+                canvas_image: fabricCanvas.current.toDataURL(),
+            })
         );
     };
     const selectCatagory = useCallback(
@@ -112,42 +129,37 @@ export default function NewDress(props: RouteComponentProps) {
         [dispatch]
     );
 
-    const saveImageHandler = async (event: React.MouseEvent) => {
-        event.preventDefault();
-        try {
-            const dataURL = fabricCanvas.current.toDataURL();
-            const canvas = JSON.stringify(fabricCanvas.current)
-            const response = await sendRequest(
-                "dress/uploadDress",
-                "POST",
-                JSON.stringify({
-                    name: "My File A",
-                    image: dataURL,
-                    canvas_json: canvas,
-                    price:amount
-                }),
-
-                {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                }
-            );
-
-            console.log(response.data.imageKey);
-        } catch (error) {
-            console.log(error);
-        }
+    const resetCanvas = () => {
+        fabricCanvas.current.clear();
+        dispatch(
+            setCanvasState({
+                current_state: JSON.stringify(fabricCanvas.current),
+            })
+        );
+        if (catagory) selectCatagory(catagory);
     };
+
     useEffect(() => {
         fabricCanvas.current = new fabric.Canvas("editor_canvas", {
             controlsAboveOverlay: true,
+            width: 300,
+            height: 400,
         });
-
-        fabricCanvas.current.setDimensions({ width: 300, height: 400 });
-
+        fabricCanvas.current.loadFromJSON(canvas_state);
+        return () => {
+            fabricCanvas.current.dispose();
+        };
+        // const json = '{"version":"5.2.1","objects":[{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":82,"top":68,"width":480,"height":602,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.28,"scaleY":0.38,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"https://clothes-store.s3.ap-south-1.amazonaws.com/dresses/be0c594a-85e5-4a79-81c4-8efdd9f4d134-photo.png.png?no-cors-please","crossOrigin":"anonymous","filters":[]}]}'
+    }, [catagory, canvas_state]);
+    useEffect(() => {
+        setCatagoryHandler("mens");
+        console.log("Hello World Boyzz");
+        return () => {
+            fabricCanvas.current.dispose();
+        };
         // const json = '{"version":"5.2.1","objects":[{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":82,"top":68,"width":480,"height":602,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.28,"scaleY":0.38,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"https://clothes-store.s3.ap-south-1.amazonaws.com/dresses/be0c594a-85e5-4a79-81c4-8efdd9f4d134-photo.png.png?no-cors-please","crossOrigin":"anonymous","filters":[]}]}'
         // fabricCanvas.current.loadFromJSON(json)
-    }, [catagory]);
+    }, []);
     const Editor = () => {
         return (
             <Grid container>
@@ -166,13 +178,13 @@ export default function NewDress(props: RouteComponentProps) {
             </Grid>
         );
     };
-    const saveCanvas = async(event: React.MouseEvent) => {
-        event.preventDefault()
+    const saveCanvas = async (event: React.MouseEvent) => {
+        event.preventDefault();
         const canvas = JSON.stringify(fabricCanvas.current);
         try {
             const dataURL = fabricCanvas.current.toDataURL();
             console.log(canvas);
-            
+
             const response = await sendRequest(
                 "dress/uploadDress",
                 "POST",
@@ -181,8 +193,7 @@ export default function NewDress(props: RouteComponentProps) {
                     image: dataURL,
                     type: catagory,
                     canvas_json: canvas,
-                    price:amount,
-
+                    price: amount,
                 }),
 
                 {
@@ -210,23 +221,73 @@ export default function NewDress(props: RouteComponentProps) {
         >
             Save
         </Button>,
-                <Button
-                color="primary"
-                variant="outlined"
-                key={"Collection"}
-                onClick={navigateToCollection}
-                sx={{
-                    my: 2,
-                    mx: 5,
-                    display: "block",
-                }}
-            >
-                Collection
-            </Button>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Reset"}
+            onClick={resetCanvas}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Reset
+        </Button>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"Collection"}
+            onClick={navigateToCollection}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Collection
+        </Button>,
+    ];
+    const TotalAmount = () => {
+        return <Box>{amount}</Box>;
+    };
+    const navigateToCart = () => {
+        navigate("/checkout");
+        dispatch(setFinalImage({current_state:JSON.stringify(fabricCanvas.current), canvas_image:fabricCanvas.current.toDataURL()}));
+        const loadRazorpayScript = async () => {
+            await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        };
+        loadRazorpayScript();
+    };
+    const rightButtons = [
+        <Typography
+            key={"cart_amount"}
+            sx={{
+                my: 3,
+                mx: 0,
+                display: "block",
+            }}
+        >
+            $ {amount}
+        </Typography>,
+        <Button
+            color="primary"
+            variant="outlined"
+            key={"go_to_cart"}
+            onClick={navigateToCart}
+            sx={{
+                my: 2,
+                mx: 5,
+                display: "block",
+            }}
+        >
+            Go to Cart
+        </Button>,
     ];
     return (
-        <BaseLayout appBarButtons={appBarButtons} saveCanvas={saveCanvas}>
+        <BaseLayout appBarButtons={appBarButtons} rightSideButtons={rightButtons}>
             <Editor />
+            <TotalAmount />
         </BaseLayout>
     );
 }

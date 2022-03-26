@@ -16,7 +16,7 @@ import storage from 'redux-persist/lib/storage' // defaults to localStorage for 
 const persistConfig = {
   key: 'editor',
   storage,
-  blacklist: ["amount"]
+  blacklist: ["amount", "catagory", "canvas_state"]
 }
 
 const collectionPersistConfig = {

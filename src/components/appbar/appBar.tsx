@@ -22,11 +22,15 @@ import {
     MenuItem,
     Tooltip,
 } from "@mui/material";
-import { inherits } from "util";
 import { useRef } from "react";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { AuthContext } from "../../context/auth-context";
 import { navigate } from "@reach/router";
+import { loadScript } from "../../helpers/loadScript";
+import { setFinalImage } from "../../redux/services/editor";
+import logo from "../../assets/myLogo.png";
+import { createStyles, makeStyles } from "@mui/styles";
+import { Theme } from "@mui/system";
 
 const drawerWidth = 200;
 
@@ -37,19 +41,42 @@ interface Props {
      */
     window?: () => Window;
     children: React.ReactNode;
-    saveCanvas: (event: React.MouseEvent) => void;
+    saveCanvas?: (event: React.MouseEvent) => void;
     editCanvas?: (event: React.MouseEvent) => void;
     appBarButtons?: React.ReactNode[];
+    rightSideButtons?: React.ReactNode[];
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            backgroundColor: theme.palette.red,
+        },
+        summaryHeader: {
+            boxShadow: "0 0 1em #d1d1d1",
+            margin: "4em 8em",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "1em",
+        },
+        logo: {
+            width: "4em",
+            marginRight: "5em",
+        },
+    })
+);
 
 export default function BaseLayout(props: Props) {
     const { window } = props;
-    const {appBarButtons} = props;
+    const classes = useStyles();
+
+    const { appBarButtons, rightSideButtons } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const { amount } = useAppSelector((state) => state.canvasReducer);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const { isLoggedIn, logout } = React.useContext(AuthContext);
-
+    const { isLoggedIn, logout, user } = React.useContext(AuthContext);
+    const dispatch = useAppDispatch();
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -61,63 +88,9 @@ export default function BaseLayout(props: Props) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-     const navigateToCollection = ()=>{
-         navigate("/collection")
-     }
-    const pages = [
-        <Button
-            color="primary"
-            variant="outlined"
-            key={"Save"}
-            onClick={props.saveCanvas}
-            sx={{
-                my: 2,
-                mx: 5,
-                display: "block",
-            }}
-        >
-            Save
-        </Button>,
-                <Button
-                color="primary"
-                variant="outlined"
-                key={"Edit"}
-                onClick={props.editCanvas}
-                sx={{
-                    my: 2,
-                    mx: 5,
-                    display: "block",
-                }}
-            >
-                Edit
-            </Button>,
-        <Button
-            color="primary"
-            variant="outlined"
-            key={"Download"}
-            onClick={handleDrawerToggle}
-            sx={{
-                my: 2,
-                mx: 5,
-                display: "block",
-            }}
-        >
-            Download
-        </Button>,
-        <Button
-            color="primary"
-            variant="outlined"
-            key={"Collection"}
-            onClick={navigateToCollection}
-            sx={{
-                my: 2,
-                mx: 5,
-                display: "block",
-            }}
-        >
-            Collection
-        </Button>,
-    ];
+    const navigateToCollection = () => {
+        navigate("/collection");
+    };
 
     const ResponsiveAppBar = (props: { openFile: () => {} }) => {
         const fileInput = useRef(null);
@@ -125,16 +98,9 @@ export default function BaseLayout(props: Props) {
             fileInput.current.click();
         };
         return (
-            <AppBar elevation={0} position="fixed" color="secondary">
+            <AppBar elevation={1} position="fixed" color="secondary">
                 <Toolbar style={{ padding: "0 4em" }}>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="nav"
-                        sx={{ mr: 10, display: { xs: "none", md: "flex" } }}
-                    >
-                        LOGO
-                    </Typography>
+                    <img className={classes.logo} src={logo} alt="Logo" />
 
                     <Box
                         sx={{
@@ -179,37 +145,20 @@ export default function BaseLayout(props: Props) {
                             display: { xs: "none", md: "flex" },
                         }}
                     >
-                        <Typography
-                            key={"cart_amount"}
-                            sx={{
-                                my: 3,
-                                mx: 0,
-                                display: "block",
-                            }}
-                        >
-                            $ {amount}
-                        </Typography>
-                        <Button
-                            color="primary"
-                            variant="outlined"
-                            key={"go_to_cart"}
-                            onClick={handleDrawerToggle}
-                            sx={{
-                                my: 2,
-                                mx: 5,
-                                display: "block",
-                            }}
-                        >
-                            Go to Cart
-                        </Button>
+                        {rightSideButtons}
                     </Box>
                     {isLoggedIn ? (
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Avatar
-                                alt="Remy Sharp"
-                                src="/static/images/avatar/2.jpg"
+                        <div>
+                            <IconButton
+                                size="large"
+                                aria-label={user.email}
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
                                 onClick={handleMenu}
-                            />
+                                color="inherit"
+                            >
+                                <Avatar alt={user.email} src={user.image} />
+                            </IconButton>
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -228,56 +177,14 @@ export default function BaseLayout(props: Props) {
                                 <MenuItem onClick={handleClose}>
                                     Profile
                                 </MenuItem>
-                                <MenuItem onClick={logout}>
-                                    Logout
-                                </MenuItem>
+                                <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>
-                        </Box>
+                        </div>
                     ) : null}
                 </Toolbar>
             </AppBar>
         );
     };
-
-    const drawer = (
-        <>
-            <Toolbar />
-            <List>
-                {[
-                    "Inbox",
-                    "Checks",
-                    "Mails",
-                    "Drafts",
-                    "All mail",
-                    "Trash",
-                ].map((text, index) => (
-                    <ListItem
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexDirection: "column",
-                            padding: "1.5em",
-                            margin: "0.2em 0em",
-                        }}
-                        button
-                        key={text}
-                    >
-                        <ListItemIcon
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                margin: "0.5em 0",
-                            }}
-                        >
-                            {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                        </ListItemIcon>
-                        <ListItemText primary={text} />
-                    </ListItem>
-                ))}
-            </List>
-        </>
-    );
 
     const container =
         window !== undefined ? () => window().document.body : undefined;
@@ -288,53 +195,12 @@ export default function BaseLayout(props: Props) {
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <ResponsiveAppBar openFile={openFileHandler} />
-            <Box
-                component="nav"
-                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-                aria-label="mailbox folders"
-            >
-                {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onClose={handleDrawerToggle}
-                    ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
-                    }}
-                    sx={{
-                        display: { xs: "block", sm: "none" },
-                        "& .MuiDrawer-paper": {
-                            boxSizing: "border-box",
-                            width: drawerWidth,
-                        },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-                <Drawer
-                    variant="permanent"
-                    sx={{
-                        display: { xs: "none", sm: "block" },
-                        "& .MuiDrawer-paper": {
-                            boxShadow: "0px 0px 30px #d1d1d1",
-                            border: "none",
-                            boxSizing: "border-box",
-                            width: drawerWidth,
-                            position: "inherit",
-                        },
-                    }}
-                    open
-                >
-                    {drawer}
-                </Drawer>
-            </Box>
+
             <Box
                 component="main"
                 sx={{
                     flexGrow: 1,
                     p: 3,
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
                 }}
             >
                 <Toolbar />
