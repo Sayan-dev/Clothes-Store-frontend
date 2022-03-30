@@ -1,4 +1,4 @@
-import { Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
 import React, { Fragment, useEffect } from "react";
@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         dresslistImage: {
             width: "8em",
+            height: "10em",
         },
         dressDetails: {
             height:"100%"
@@ -47,20 +48,23 @@ const CompanyImage = (props: CompanyDress) => {
     const classes = useStyles();
     return (
         <Grid container >
-            <Grid item>
+            <Grid item xs={6} style={{display:"flex", alignItems:"center", justifyContent: "center"}}>
             <img
                 className={classes.dresslistImage}
                 src={props.image}
                 alt={props.name}
             />
             </Grid>
-            <Grid item>
+            <Grid item xs={6}>
                 <Grid container direction="column">
                     <Grid item className={classes.dressDetails}>
-                    {props.name}
+                    <Typography style={{fontWeight:600,fontSize:"20px", overflow: "hidden", wordWrap:"normal"}}>{props.name}</Typography>
                     </Grid>
                     <Grid item className={classes.dressDetails}>
-                    $ {props.price}
+                    <Typography>&#8377; {props.price}</Typography>
+                    </Grid>
+                    <Grid item className={classes.dressDetails}>
+                    In Stock:{" "} 4
                     </Grid>
                 </Grid>
             </Grid>

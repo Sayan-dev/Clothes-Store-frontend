@@ -1,0 +1,79 @@
+import { Button, Grid, Paper, Theme, Typography } from '@mui/material'
+import { createStyles, makeStyles } from '@mui/styles';
+import React from 'react'
+import { CartItem } from '../../types/cart';
+import { Order, Orders } from '../../types/orders'
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root:{
+          margin:"3em 0",
+          borderLeft: `1px solid ${theme.palette.primary.dark}`,
+          backgroundColor: `#fbfff594`,
+          padding: "1em 3em 2em 3em",
+          "& MuiGrid-item":{
+          }
+        },
+        allItems:{
+          boxShadow:"0 0 1em #d3d3d3 "
+        },
+        itemContainer:{
+          padding:"2em 0",
+          backgroundColor:"#fff",
+          marginBottom:"0",
+          border: "1px solid #e1e1e1",
+          borderRadius: "2px",
+          "& img":{
+            width: "5em",
+            height:"5.5em"
+          }
+        }
+    })
+);
+
+
+export default function OrderComponent(props:{orderData:Order}) {
+  const classes=useStyles()
+    const {orderData} = props
+  const ItemHtml =({item}:{item:CartItem})=> (
+    <Grid container className={classes.itemContainer}>
+      <Grid item xs={5} style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <img src={item.image} alt={item.name}></img>
+      </Grid>
+      <Grid item xs={7}>
+        <Typography style={{fontWeight: 600, fontSize:"20px"}}>{item.name}</Typography>
+        <Typography>Quantity: {item.quantity}</Typography>
+      </Grid>
+    </Grid>
+
+  )
+  const OrderDetails = () =>(
+    <Grid container>
+      <Grid item>
+      {orderData.notes.email}
+        {orderData.amount}
+        {orderData.notes.address}
+        {new Date(orderData.createdAt).toString()}
+        {orderData.amount}
+      </Grid>
+    </Grid>
+  )
+  return (
+    <Grid container className={classes.root}>
+      <Grid item xs={12} style={{padding:"1em 0", textTransform:"capitalize", fontSize:"18px"}}>{orderData.status}</Grid>
+      <Grid item xs={7} className={classes.allItems}>
+
+        {orderData.items.map(item=>{
+          return(
+            <ItemHtml item={item}/>
+          )
+        })}
+      </Grid>
+      <Grid item xs={5} alignItems="center" direction="column" style={{padding:"0 2em", justifyContent: "center", alignItems: "center"}}>
+        <Button style={{padding:"1em 2em"}} fullWidth variant="outlined">View Details</Button>
+        <Button style={{padding:"1em 2em"}} fullWidth>Get Invoice</Button>
+          
+        </Grid>
+    </Grid>
+  )
+}

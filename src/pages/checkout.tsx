@@ -33,16 +33,21 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         infoForm: {
             width: "100%",
+            padding: "2em 2em 1em 4em",
+
             "& .MuiGrid-item": {
-                padding: "2em 4em 2em 6em",
+                padding: "1em 1em 1em 1em",
             },
         },
     })
 );
 export default function Checkout(props: RouteComponentProps) {
     const classes = useStyles();
-    const { items, final_image, amount } = useAppSelector(
+    const { final_image } = useAppSelector(
         (state) => state.canvasReducer
+    );
+    const { items, amount } = useAppSelector(
+        (state) => state.cartReducer
     );
     const { user, token } = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -57,6 +62,9 @@ export default function Checkout(props: RouteComponentProps) {
     const checkBookingStatus = (orderId: string) => {
         console.log("Booked Successfully", appBarButtons);
     };
+    const itemsArr = Object.keys(items).map((key)=>{
+        return items[key]
+    })
     const onPayHandler = async (event: React.FormEvent | any) => {
         event.preventDefault();
         console.log(event.target["address"].value);
@@ -66,7 +74,7 @@ export default function Checkout(props: RouteComponentProps) {
             "POST",
             {
                 amount,
-                items,
+                items:itemsArr,
                 address: event.target["address"].value,
                 email: event.target["email"].value,
                 phoneNo: event.target["phoneNo"].value,
@@ -104,10 +112,10 @@ export default function Checkout(props: RouteComponentProps) {
             setBillStructure(newBillStructure);
         };
         getBillDetails(amount);
-    }, []);
+    }, [amount]);
     const appBarButtons = [
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Create New"}
             onClick={navigateToNew}
@@ -120,7 +128,7 @@ export default function Checkout(props: RouteComponentProps) {
             Create New
         </Button>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Your_Orders"}
             onClick={navigateToOrders}
@@ -159,13 +167,16 @@ export default function Checkout(props: RouteComponentProps) {
                         fontSize:20,
                         margin:"1em 0"
                     }}>Your Orders</Typography>
-                    {items?.map((item) => {
+                    <div style={{height: "25em",overflowY:"scroll"}}>
+                    {itemsArr?.map((item) => {
                         return (
                             <>
                                 <CheckoutItem item={item} />
                             </>
                         );
                     })}
+                    </div>
+
                 </Grid>
             </Grid>
             <Grid container>
@@ -182,7 +193,7 @@ export default function Checkout(props: RouteComponentProps) {
                                 name="address"
                                 required
                                 helperText="Please Use Landmark for faster delivery"
-                                variant="standard"
+                                variant="outlined"
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -191,7 +202,7 @@ export default function Checkout(props: RouteComponentProps) {
                                 label="Email"
                                 name="email"
                                 required
-                                variant="standard"
+                                variant="outlined"
                             />
                         </Grid>
                         <Grid item xs={6}>
@@ -200,7 +211,7 @@ export default function Checkout(props: RouteComponentProps) {
                                 label="Phone Number"
                                 name="phoneNo"
                                 required
-                                variant="standard"
+                                variant="outlined"
                             />
                         </Grid>
                     </Grid>

@@ -11,6 +11,7 @@ import {
 } from 'redux-persist'
 import EditorReducer from './services/editor'
 import CollectionReducer from './services/collection'
+import CartReducer from './services/cart'
 import storage from 'redux-persist/lib/storage' // defaults to localStorage for web
  
 const persistConfig = {
@@ -23,14 +24,21 @@ const collectionPersistConfig = {
   key: 'collection',
   storage,
 }
- 
+
+const cartConfig = {
+  key: 'cart',
+  storage,
+}
+
 const persistedReducer = persistReducer(persistConfig, EditorReducer)
 const persistedCollectionReducer = persistReducer(collectionPersistConfig, CollectionReducer)
+const persistedCartReducer = persistReducer(cartConfig, CartReducer)
  
 const store = configureStore({
   reducer: {
     canvasReducer:persistedReducer,
-    collectionReducer: persistedCollectionReducer
+    collectionReducer: persistedCollectionReducer,
+    cartReducer: persistedCartReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

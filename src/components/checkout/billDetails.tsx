@@ -1,16 +1,12 @@
-import { Box, Button, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Grid, TextField, Theme, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import { Theme } from "@mui/system";
 import React, { useEffect } from "react";
 import { useAppSelector } from "../../redux/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            backgroundColor: theme.palette.red,
-        },
         summaryHeader: {
-            margin: "0 2em 4em 2em",
+            margin: "0 2em 3em 2em",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -22,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         summaryBackground: {
             width: "80%",
-            boxShadow: "0 0 1em #2fff00",
+            boxShadow: `0 0 1em ${theme.palette.secondary.dark}`,
             margin: "auto",
             backgroundColor: "#fff",
         },
@@ -46,8 +42,6 @@ export interface billDetailsProps {
 }
 export default function BillDetails(props: billDetailsProps) {
     const classes = useStyles();
-    const { amount, items } = useAppSelector((state) => state.canvasReducer);
-
     const listItem = (name: string, value: number) => {
         return (
             <Grid container className={classes.amountItem}>
@@ -109,7 +103,7 @@ export default function BillDetails(props: billDetailsProps) {
                                 />
                             </Grid>
                             <Grid item xs={3} justifyContent="right" alignItems="end">
-                                <Button color="secondary" variant="contained">Apply</Button>
+                                <Button color="primary" variant="contained">Apply</Button>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -118,7 +112,7 @@ export default function BillDetails(props: billDetailsProps) {
             <Box className={classes.summaryHeader}>
                 <Button
                     size="large"
-                    color="secondary"
+                    color="primary"
                     type="submit"
                     form="submit-details-form"
                     variant="contained"

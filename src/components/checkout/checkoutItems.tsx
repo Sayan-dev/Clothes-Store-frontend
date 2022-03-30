@@ -1,11 +1,15 @@
-import { Box, Grid, Paper, Typography } from "@mui/material";
+import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { Theme } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import React from "react";
 import { CompanyDress } from "../../types/dress";
+import { useAppDispatch } from "../../redux/hooks";
+import { removeItemFromCart } from "../../redux/services/cart";
+import { CartItem } from "../../types/cart";
 
 export interface CheckoutItemInterface {
-    item: CompanyDress;
+    item: CartItem;
+    removeItemFromCartHandler?: ()=>void
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -24,8 +28,13 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 export default function CheckoutItem(props: CheckoutItemInterface) {
+    // const {removeItemFromCartHandler} = props
+    const dispatch = useAppDispatch()
+    const removeItemFromCartHandler = (e:React.MouseEvent, itemId:CartItem["_id"]) =>{
+        e.preventDefault()
+        dispatch(removeItemFromCart({itemId}))
+    }
     const classes = useStyles();
-
     return (
         <Box className={classes.root}>
             <Paper>
@@ -65,7 +74,7 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Typography>In Stock:{" "}4</Typography>
+                        <Typography>Quantity:{" "}{props.item.quantity}</Typography>
 
                         <Typography
                             style={{
@@ -77,6 +86,10 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
                             Best in Syle and Quality, Freshly designed by lead
                             designers
                         </Typography>
+                        <Button style={{
+                            margin:"1em 0",
+                            padding:"0.5em"
+                        }} variant="outlined" onClick={(event)=>removeItemFromCartHandler(event,props.item._id)} color="error">Remove from Cart</Button>
                     </Grid>
                 </Grid>
             </Paper>

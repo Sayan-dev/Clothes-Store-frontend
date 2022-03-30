@@ -3,7 +3,6 @@ import { CompanyDress } from "../../types/dress";
 
 interface Editor_State {
     loading: boolean;
-    amount: number;
     items: CompanyDress[];
     canvas_state: string;
     final_image: string;
@@ -12,7 +11,6 @@ interface Editor_State {
 
 const initialState = {
     loading: false,
-    amount: 0,
     items: [],
     canvas_state: "",
     final_image: "",
@@ -29,14 +27,13 @@ const editorSlice = createSlice({
     name: "editor",
     initialState,
     reducers: {
-        addItemToCart(state, action: PayloadAction<Item_State>) {
+        addItemToCanvas(state, action: PayloadAction<Item_State>) {
             if (
                 state.items.findIndex((ele) =>
                     ele._id === action.payload.item._id
                 )< 0
             ){
                 state.items.push(action.payload.item);
-                state.amount += action.payload.item.price;
                 state.canvas_state = action.payload.canvas_state;
                 state.final_image = action.payload.canvas_image;
             }
@@ -44,7 +41,6 @@ const editorSlice = createSlice({
         },
         removeAllItems(state, action: PayloadAction<CompanyDress>) {
             state.items = [];
-            state.amount = 0;
         },
         setCatagory(
             state,
@@ -73,7 +69,7 @@ const editorSlice = createSlice({
 });
 
 export const {
-    addItemToCart,
+    addItemToCanvas,
     removeAllItems,
     setCatagory,
     setCanvasState,

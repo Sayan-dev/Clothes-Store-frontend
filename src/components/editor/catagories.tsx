@@ -41,7 +41,7 @@ export default function Catagories({setCatagory}:{setCatagory: (catagory: "mens"
             <div className={classes.catagoryContainer}>
                 <Grid container>
                     {list.map((e:{label:string, value:"mens" | "womens" | "kids"}) => (
-                        <Grid key={e.value} className={classes.catagoryItem} item xs={12}><Button color="secondary" variant={catagory===e.value?"contained":"outlined"} onClick={()=>setCatagory(e.value)} className={classes.gridButton}>{e.label}</Button></Grid>
+                        <Grid key={e.value} className={classes.catagoryItem} item xs={12}><Button variant={catagory===e.value?"contained":"outlined"} onClick={()=>setCatagory(e.value)} className={classes.gridButton}>{e.label}</Button></Grid>
                     ))}
                 </Grid>
             </div>

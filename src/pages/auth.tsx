@@ -1,4 +1,14 @@
-import { Box, Button, Grid, Paper, TextField, Typography } from "@mui/material";
+import {
+    Box,
+    Button,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    Grid,
+    Paper,
+    TextField,
+    Typography,
+} from "@mui/material";
 import { Theme } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { RouteComponentProps } from "@reach/router";
@@ -6,6 +16,7 @@ import React, { useContext, useState } from "react";
 import GoogleLogin from "react-google-login";
 import { AuthContext } from "../context/auth-context";
 import { useHttpClient } from "../hooks/http-hook";
+import GoogleImage from "../assets/google.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,24 +33,31 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         loginBox: {
             boxShadow: "0px 0px 30em #d3d3d3",
-            height: "auto",
-            width: "100%",
-            padding: "1em 2em 5em 2em",
+            height: "70vh",
+            width: "50%",
+            padding: "2em 3em",
+            borderRadius: "1em",
         },
         loginHeader: {
             fontSize: "2em",
             fontWeight: 300,
+            marginBottom: "2em",
+            "& button": {
+                padding:"1em 2em",
+                fontSize:18,
+                borderRadius: "1em",
+                textTransform:"capitalize"
+            },
         },
         loginBody: {
             height: "15em",
-            "& button":{
-                marginTop:"5em"
+            "& button": {
+                marginTop: "2em",
             },
-            "& form":{
-                display:"flex",
+            "& form": {
+                display: "flex",
                 flexDirection: "column",
-
-            }
+            },
         },
     })
 );
@@ -48,11 +66,25 @@ interface State {
     password: string;
     showPassword: boolean;
 }
+interface SignupState {
+    email: string;
+    name: string;
+    password: string;
+    showPassword: boolean;
+}
 export default function Auth(props: RouteComponentProps) {
     const userAuth = useContext(AuthContext);
+    const [isLogin, setIsLogin] = useState(true);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [values, setValues] = useState<State>({
         email: "",
+        password: "",
+        showPassword: false,
+    });
+
+    const [signUpValues, setSignUpValues] = useState<SignupState>({
+        email: "",
+        name: "",
         password: "",
         showPassword: false,
     });
@@ -72,69 +104,230 @@ export default function Auth(props: RouteComponentProps) {
         userAuth.login(responseData.token, responseData);
     };
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         const responseData = await sendRequest(`users/login`, "POST", {
             email: values.email,
             password: values.password,
         });
         userAuth.login(responseData.token, responseData);
     };
+    const handleSignUpSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const responseData = await sendRequest(`users/signup`, "POST", {
+            name: signUpValues.name,
+            email: signUpValues.email,
+            password: signUpValues.password,
+        });
+        userAuth.login(responseData.token, responseData);
+    };
+
+    const LoginBody = (
+        <form onSubmit={(e: React.FormEvent) => handleSubmit(e)}>
+            <TextField
+                label="Email"
+                variant="outlined"
+                placeholder="Enter your email"
+                required
+                value={values.email}
+                onChange={(e) =>
+                    setValues((prev: State) => {
+                        return {
+                            ...prev,
+                            email: e.target.value,
+                        };
+                    })
+                }
+                style={{
+                    marginBottom: "2em",
+                }}
+            />
+
+            <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                placeholder="Enter your password"
+                required
+                value={values.password}
+                onChange={(e) =>
+                    setValues((prev: State) => {
+                        return {
+                            ...prev,
+                            password: e.target.value,
+                        };
+                    })
+                }
+                style={{
+                    marginBottom: "1em",
+                }}
+            />
+            <Button
+                style={{ textTransform:"capitalize", margin: "8em 0 1em 0", padding: "1em" }}
+                type="submit"
+                variant="contained"
+            >
+                Submit
+            </Button>
+            <Box>
+                <Grid container>
+                    <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
+                    <Grid style={{textAlign:"center"}} item xs={2}><span>OR</span></Grid>
+                    <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
+                </Grid>
+            </Box>
+            <Button
+                style={{ textTransform:"capitalize", margin: "1em 0 0.5em 0", padding: "1em" }}
+                fullWidth
+                variant="outlined"
+            >
+                <img
+                    style={{ height: "80%", margin: "0 1em" }}
+                    src={GoogleImage}
+                    alt="Google"
+                />
+                <Typography style={{ textTransform: "capitalize" }}>
+                    Sign in with Google
+                </Typography>
+            </Button>
+        </form>
+    );
+
+    const SignupBody = (
+        <form onSubmit={(e: React.FormEvent) => handleSignUpSubmit(e)}>
+            <TextField
+                label="Name"
+                variant="outlined"
+                placeholder="Enter your name"
+                required
+                value={signUpValues.name}
+                onChange={(e) =>
+                    setSignUpValues((prev: SignupState) => {
+                        return {
+                            ...prev,
+                            name: e.target.value,
+                        };
+                    })
+                }
+                style={{
+                    marginBottom: "2em",
+                }}
+            />
+            <TextField
+                label="Email"
+                variant="outlined"
+                placeholder="Enter your email"
+                required
+                value={signUpValues.email}
+                onChange={(e) =>
+                    setSignUpValues((prev: SignupState) => {
+                        return {
+                            ...prev,
+                            email: e.target.value,
+                        };
+                    })
+                }
+                style={{
+                    marginBottom: "2em",
+                }}
+            />
+
+            <TextField
+                label="Password"
+                variant="outlined"
+                type="password"
+                placeholder="Enter your password"
+                required
+                value={signUpValues.password}
+                onChange={(e) =>
+                    setSignUpValues((prev: SignupState) => {
+                        return {
+                            ...prev,
+                            password: e.target.value,
+                        };
+                    })
+                }
+                style={{
+                    marginBottom: "1em",
+                }}
+            />
+            <Button
+                style={{ textTransform:"capitalize", margin: "2em 0 1em 0", padding: "1em" }}
+                type="submit"
+                variant="contained"
+            >
+                Submit
+            </Button>
+            <Box>
+                <Grid container>
+                    <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
+                    <Grid style={{textAlign:"center"}} item xs={2}><span>OR</span></Grid>
+                    <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
+                </Grid>
+            </Box>
+            <Button
+                style={{ textTransform:"capitalize", margin: "1em 0 0.5em 0", padding: "1em" }}
+                fullWidth
+                variant="outlined"
+            >
+                <img
+                    style={{ height: "80%", margin: "0 1em" }}
+                    src={GoogleImage}
+                    alt="Google"
+                />
+                <Typography style={{ textTransform: "capitalize" }}>
+                    Sign in with Google
+                </Typography>
+            </Button>
+        </form>
+    );
     return (
         <Grid container>
-            <Grid item xs={8} className={classes.root}>
+            <Grid item xs={6} className={classes.root}>
                 <img
                     className={classes.loginImage}
                     alt="background"
-                    src="https://png.pngtree.com/background/20210711/original/pngtree-dark-vector-abstract-background-picture-image_1159556.jpg"
+                    src="https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8d2FsbCUyMGJhY2tncm91bmR8ZW58MHx8MHx8&w=1000&q=80"
                 />
             </Grid>
-            <Grid item xs={4}>
-                <Box sx={{ mx: 15, my: 15 }}>
-                    <Paper className={classes.loginBox}>
-                        <h3 className={classes.loginHeader}>Login</h3>
-                        <Box className={classes.loginBody}>
-                            <form onSubmit={(e:React.FormEvent)=>handleSubmit(e)}>
-                            <TextField
-                                label="Email"
-                                variant="filled"
-                                required
-                                value={values.email}
-                                onChange={(e) =>
-                                    setValues((prev: State) => {
-                                        return {
-                                            ...prev,
-                                            email: e.target.value,
-                                        };
-                                    })
-                                }
-                            />
-                             <TextField
-                                label="Password"
-                                variant="filled"
-                                required
-                                value={values.password}
-                                onChange={(e) =>
-                                    setValues((prev: State) => {
-                                        return {
-                                            ...prev,
-                                            password: e.target.value,
-                                        };
-                                    })
-                                }
-                            />
-                            <Button type="submit" variant="contained">
-                                Submit
-                            </Button>
-                            </form>
-                        </Box>
-                        {/* <GoogleLogin
+            <Grid
+                style={{
+                    padding: "5em 0 0 7em",
+                }}
+                item
+                xs={6}
+            >
+                <Box className={classes.loginBox}>
+                    <Box className={classes.loginHeader}>
+                        <Button variant={isLogin?"contained":"text"} onClick={() => setIsLogin(true)}>Login</Button>
+                        <Button variant={isLogin?"text":"contained"} onClick={() => setIsLogin(false)}>
+                            SignUp
+                        </Button>
+                    </Box>
+                    <Box className={classes.loginBody}>
+                        {isLogin ? LoginBody : SignupBody}
+                    </Box>
+                    {/* <Box
+                        style={{
+                            marginTop: "4em",
+                        }}
+                    >
+                        <GoogleLogin
+                            render={()=>{
+                                return(
+                                    <Button  style={{padding:"0.5em"}}  color="secondary" fullWidth variant="outlined">
+                                        <img  style={{height:"80%", margin:"0 1em"}}  src={GoogleImage} alt="Google"/>
+                                        <Typography style={{textTransform:"capitalize"}}>Sign in with Google</Typography>
+                                    </Button>
+                                )
+                            }}
                             clientId="380360847586-tvu7qq43tb5ep0cemn9kpic598tv8hip.apps.googleusercontent.com"
                             buttonText="Sign in with Google"
                             onSuccess={responseGoogle}
                             onFailure={responseGoogle}
                             cookiePolicy={"single_host_origin"}
-                        /> */}
-                    </Paper>
+                        />
+
+                    </Box> */}
                 </Box>
             </Grid>
         </Grid>

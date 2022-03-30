@@ -42,7 +42,7 @@ export default function Collection(props: RouteComponentProps) {
     );
     const appBarButtons = [
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Create New"}
             onClick={navigateToNew}

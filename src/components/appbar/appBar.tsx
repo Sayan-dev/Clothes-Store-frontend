@@ -31,6 +31,7 @@ import { setFinalImage } from "../../redux/services/editor";
 import logo from "../../assets/myLogo.png";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
+import { orange } from "@mui/material/colors";
 
 const drawerWidth = 200;
 
@@ -73,21 +74,12 @@ export default function BaseLayout(props: Props) {
 
     const { appBarButtons, rightSideButtons } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
-    const { amount } = useAppSelector((state) => state.canvasReducer);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const { isLoggedIn, logout, user } = React.useContext(AuthContext);
     const dispatch = useAppDispatch();
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
 
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
     const navigateToCollection = () => {
         navigate("/collection");
     };
@@ -98,7 +90,7 @@ export default function BaseLayout(props: Props) {
             fileInput.current.click();
         };
         return (
-            <AppBar elevation={1} position="fixed" color="secondary">
+            <AppBar elevation={1} position="fixed" color="primary">
                 <Toolbar style={{ padding: "0 4em" }}>
                     <img className={classes.logo} src={logo} alt="Logo" />
 
@@ -149,36 +141,17 @@ export default function BaseLayout(props: Props) {
                     </Box>
                     {isLoggedIn ? (
                         <div>
+
+                            <Button style={{marginRight:"2em"}} color="secondary" variant="outlined" onClick={logout}>Logout</Button>
                             <IconButton
                                 size="large"
-                                aria-label={user.email}
+                                aria-label={user.name}
                                 aria-controls="menu-appbar"
                                 aria-haspopup="true"
-                                onClick={handleMenu}
-                                color="inherit"
+                                color="secondary"
                             >
-                                <Avatar alt={user.email} src={user.image} />
+                                <Avatar alt={user.name} sx={{ bgcolor: orange[600] }} src={user.image} >{user.image?undefined:user.name[0]}</Avatar>
                             </IconButton>
-                            <Menu
-                                id="menu-appbar"
-                                anchorEl={anchorEl}
-                                anchorOrigin={{
-                                    vertical: "top",
-                                    horizontal: "right",
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: "top",
-                                    horizontal: "right",
-                                }}
-                                open={Boolean(anchorEl)}
-                                onClose={handleClose}
-                            >
-                                <MenuItem onClick={handleClose}>
-                                    Profile
-                                </MenuItem>
-                                <MenuItem onClick={logout}>Logout</MenuItem>
-                            </Menu>
                         </div>
                     ) : null}
                 </Toolbar>

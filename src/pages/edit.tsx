@@ -19,12 +19,14 @@ import { getPosition, getScale } from "../helpers/constants";
 import { CompanyDress } from "../types/dress";
 import { useHttpClient } from "../hooks/http-hook";
 import {
-    addItemToCart,
+    addItemToCanvas,
     removeAllItems,
     setCatagory,
 } from "../redux/services/editor";
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { AuthContext } from "../context/auth-context";
+import { CartItem } from "../types/cart";
+import { addCartItem } from "../redux/services/cart";
 
 interface CanvasProps extends RouteComponentProps {
     collectionId: string;
@@ -130,6 +132,10 @@ export default function NewDress(props: CanvasProps) {
 
         // setCatagory(collection[props.collectionId]?.type);
     }, []);
+    const addDressToCartHandler = (e:React.MouseEvent, item:CompanyDress) => {
+        e.preventDefault()
+        dispatch(addCartItem({item:{...item, quantity: 1}}))
+    }
     const Editor = () => {
         return (
             <Grid container>
@@ -138,7 +144,9 @@ export default function NewDress(props: CanvasProps) {
                 </Grid>
                 <Grid item sm={4}>
                     <Dresses
+
                         addDressHandler={addDressHandler}
+                        addDressToCartHandler={addDressToCartHandler}
                         catagory={catagory}
                     />
                 </Grid>
@@ -174,7 +182,7 @@ export default function NewDress(props: CanvasProps) {
     };
     const appBarButtons = [
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Edit"}
             onClick={saveEditCanvas}
@@ -187,7 +195,7 @@ export default function NewDress(props: CanvasProps) {
             Edit
         </Button>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Create New"}
             onClick={navigateToNew}
@@ -200,7 +208,7 @@ export default function NewDress(props: CanvasProps) {
             Create New
         </Button>,
                 <Button
-                color="primary"
+                color="secondary"
                 variant="outlined"
                 key={"Collection"}
                 onClick={navigateToCollection}

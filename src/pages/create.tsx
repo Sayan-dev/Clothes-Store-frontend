@@ -19,7 +19,7 @@ import { getPosition, getScale } from "../helpers/constants";
 import { CompanyDress } from "../types/dress";
 import { useHttpClient } from "../hooks/http-hook";
 import {
-    addItemToCart,
+    addItemToCanvas,
     removeAllItems,
     setCanvasState,
     setCatagory,
@@ -28,6 +28,13 @@ import {
 import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { AuthContext } from "../context/auth-context";
 import { loadScript } from "../helpers/loadScript";
+import { CartItem } from "../types/cart";
+import { addCartItem } from "../redux/services/cart";
+
+
+interface ImageWithId extends fabric.IImageOptions{
+    id: string
+}
 
 export default function NewDress(props: RouteComponentProps) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
@@ -35,9 +42,10 @@ export default function NewDress(props: RouteComponentProps) {
     const fabricCanvas = useRef(null);
     const dispatch = useAppDispatch();
     const { token } = useContext(AuthContext);
-    const { catagory, canvas_state, amount } = useAppSelector(
+    const { catagory, canvas_state } = useAppSelector(
         (state) => state.canvasReducer
     );
+    const { amount, items } = useAppSelector((state) => state.cartReducer);
     // useEffect(() => {
     //     const item = localStorage.getItem("catagory");
     //     setCatagory(item);
@@ -63,7 +71,7 @@ export default function NewDress(props: RouteComponentProps) {
         fabric.Image.fromURL(
             `${uri}?no-cors-please`,
             (img) => {
-                const oImg = img.set(getPosition(type, dresstype));
+                const oImg = img.set({ ...getPosition(type, dresstype), id: dresstype } as ImageWithId);
                 oImg.scaleX = getScale(type).x;
                 oImg.scaleY = getScale(type).y;
                 fabricCanvas.current.add(oImg).renderAll();
@@ -71,7 +79,7 @@ export default function NewDress(props: RouteComponentProps) {
             { crossOrigin: "anonymous" }
         );
         dispatch(
-            addItemToCart({
+            addItemToCanvas({
                 item,
                 canvas_state: JSON.stringify(fabricCanvas.current),
                 canvas_image: fabricCanvas.current.toDataURL(),
@@ -80,7 +88,6 @@ export default function NewDress(props: RouteComponentProps) {
     };
     const selectCatagory = useCallback(
         (catagory: "mens" | "womens" | "kids") => {
-            console.log("Hello World", catagory);
             fabricCanvas.current.clear();
             dispatch(removeAllItems());
             switch (catagory) {
@@ -130,7 +137,9 @@ export default function NewDress(props: RouteComponentProps) {
     );
 
     const resetCanvas = () => {
-        fabricCanvas.current.clear();
+        if (fabricCanvas.current) {
+            fabricCanvas.current.clear();
+        }
         dispatch(
             setCanvasState({
                 current_state: JSON.stringify(fabricCanvas.current),
@@ -146,20 +155,23 @@ export default function NewDress(props: RouteComponentProps) {
             height: 400,
         });
         fabricCanvas.current.loadFromJSON(canvas_state);
-        return () => {
-            fabricCanvas.current.dispose();
-        };
         // const json = '{"version":"5.2.1","objects":[{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":82,"top":68,"width":480,"height":602,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.28,"scaleY":0.38,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"https://clothes-store.s3.ap-south-1.amazonaws.com/dresses/be0c594a-85e5-4a79-81c4-8efdd9f4d134-photo.png.png?no-cors-please","crossOrigin":"anonymous","filters":[]}]}'
-    }, [catagory, canvas_state]);
+    }, [catagory, canvas_state, items]);
+
     useEffect(() => {
         setCatagoryHandler("mens");
-        console.log("Hello World Boyzz");
-        return () => {
-            fabricCanvas.current.dispose();
-        };
         // const json = '{"version":"5.2.1","objects":[{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":0,"top":0,"width":1000,"height":1000,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.3,"scaleY":0.4,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"http://localhost:3000/static/media/female.ad849b45916c2d93018a.png","crossOrigin":"anonymous","filters":[]},{"type":"image","version":"5.2.1","originX":"left","originY":"top","left":82,"top":68,"width":480,"height":602,"fill":"rgb(0,0,0)","stroke":null,"strokeWidth":0,"strokeDashArray":null,"strokeLineCap":"butt","strokeDashOffset":0,"strokeLineJoin":"miter","strokeUniform":false,"strokeMiterLimit":4,"scaleX":0.28,"scaleY":0.38,"angle":0,"flipX":false,"flipY":false,"opacity":1,"shadow":null,"visible":true,"backgroundColor":"","fillRule":"nonzero","paintFirst":"fill","globalCompositeOperation":"source-over","skewX":0,"skewY":0,"cropX":0,"cropY":0,"src":"https://clothes-store.s3.ap-south-1.amazonaws.com/dresses/be0c594a-85e5-4a79-81c4-8efdd9f4d134-photo.png.png?no-cors-please","crossOrigin":"anonymous","filters":[]}]}'
         // fabricCanvas.current.loadFromJSON(json)
     }, []);
+    const addDressToCartHandler = (e: React.MouseEvent, item: CompanyDress) => {
+        e.preventDefault();
+        dispatch(
+            setCanvasState({
+                current_state: JSON.stringify(fabricCanvas.current),
+            })
+        );
+        dispatch(addCartItem({ item: { ...item, quantity: 1 } }));
+    };
     const Editor = () => {
         return (
             <Grid container>
@@ -172,6 +184,7 @@ export default function NewDress(props: RouteComponentProps) {
                 <Grid item sm={3}>
                     <Dresses
                         addDressHandler={addDressHandler}
+                        addDressToCartHandler={addDressToCartHandler}
                         catagory={catagory}
                     />
                 </Grid>
@@ -206,10 +219,10 @@ export default function NewDress(props: RouteComponentProps) {
         }
         console.log(canvas);
     };
-
+    console.log(fabricCanvas.current?.toJSON(["id"]));
     const appBarButtons = [
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Save"}
             onClick={saveCanvas}
@@ -222,7 +235,7 @@ export default function NewDress(props: RouteComponentProps) {
             Save
         </Button>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Reset"}
             onClick={resetCanvas}
@@ -235,7 +248,7 @@ export default function NewDress(props: RouteComponentProps) {
             Reset
         </Button>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Collection"}
             onClick={navigateToCollection}
@@ -248,12 +261,14 @@ export default function NewDress(props: RouteComponentProps) {
             Collection
         </Button>,
     ];
-    const TotalAmount = () => {
-        return <Box>{amount}</Box>;
-    };
     const navigateToCart = () => {
         navigate("/checkout");
-        dispatch(setFinalImage({current_state:JSON.stringify(fabricCanvas.current), canvas_image:fabricCanvas.current.toDataURL()}));
+        dispatch(
+            setFinalImage({
+                current_state: JSON.stringify(fabricCanvas.current),
+                canvas_image: fabricCanvas.current.toDataURL(),
+            })
+        );
         const loadRazorpayScript = async () => {
             await loadScript("https://checkout.razorpay.com/v1/checkout.js");
         };
@@ -271,7 +286,7 @@ export default function NewDress(props: RouteComponentProps) {
             $ {amount}
         </Typography>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"go_to_cart"}
             onClick={navigateToCart}
@@ -285,9 +300,11 @@ export default function NewDress(props: RouteComponentProps) {
         </Button>,
     ];
     return (
-        <BaseLayout appBarButtons={appBarButtons} rightSideButtons={rightButtons}>
+        <BaseLayout
+            appBarButtons={appBarButtons}
+            rightSideButtons={rightButtons}
+        >
             <Editor />
-            <TotalAmount />
         </BaseLayout>
     );
 }

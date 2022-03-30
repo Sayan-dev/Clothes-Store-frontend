@@ -2,13 +2,17 @@ import { Box, Button, Grid, Typography } from "@mui/material";
 import { navigate, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import BaseLayout from "../components/appbar/appBar";
+import OrderComponent from "../components/orders/order";
 import { AuthContext } from "../context/auth-context";
 import { useHttpClient } from "../hooks/http-hook";
+import { Orders } from "../types/orders";
+
+
 
 export default function Order(props: RouteComponentProps) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const {token} = useContext(AuthContext)
-    const [orders, setOrders] = useState<{status:string}[]>([])
+    const [orders, setOrders] = useState<Orders>([])
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -37,7 +41,7 @@ const navigateToCollection = () => {
 
     const appBarButtons = [
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Create New"}
             onClick={navigateToNew}
@@ -50,7 +54,7 @@ const navigateToCollection = () => {
             Create New
         </Button>,
         <Button
-            color="primary"
+            color="secondary"
             variant="outlined"
             key={"Collection"}
             onClick={navigateToCollection}
@@ -65,17 +69,11 @@ const navigateToCollection = () => {
     ];
     const NewOrders = ()=>{
         return(
-            <Box>
+            <Box style={{width:"60%", margin:"auto"}}>
                 {orders?.map(order=>{
-                    console.log(order.status);
+                    console.log(order);
                     
-                    return (
-                        <Grid container>
-                            <Grid item xs={12}>
-                                <Typography>{order.status}</Typography>
-                            </Grid>
-                        </Grid>
-                    )
+                    return <OrderComponent orderData={order}/>
                 })}
             </Box>
         )
