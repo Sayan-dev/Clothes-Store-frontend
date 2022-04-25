@@ -30,15 +30,14 @@ import { AuthContext } from "../context/auth-context";
 import { loadScript } from "../helpers/loadScript";
 import { CartItem } from "../types/cart";
 import { addCartItem } from "../redux/services/cart";
+import Loader from "../components/loader/loader";
 
-
-interface ImageWithId extends fabric.IImageOptions{
-    id: string
+interface ImageWithId extends fabric.IImageOptions {
+    id: string;
 }
 
 export default function NewDress(props: RouteComponentProps) {
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-
     const fabricCanvas = useRef(null);
     const dispatch = useAppDispatch();
     const { token } = useContext(AuthContext);
@@ -71,7 +70,10 @@ export default function NewDress(props: RouteComponentProps) {
         fabric.Image.fromURL(
             `${uri}?no-cors-please`,
             (img) => {
-                const oImg = img.set({ ...getPosition(type, dresstype), id: dresstype } as ImageWithId);
+                const oImg = img.set({
+                    ...getPosition(type, dresstype),
+                    id: dresstype,
+                } as ImageWithId);
                 oImg.scaleX = getScale(type).x;
                 oImg.scaleY = getScale(type).y;
                 fabricCanvas.current.add(oImg).renderAll();
@@ -198,7 +200,7 @@ export default function NewDress(props: RouteComponentProps) {
             const dataURL = fabricCanvas.current.toDataURL();
             console.log(canvas);
 
-            const response = await sendRequest(
+            await sendRequest(
                 "dress/uploadDress",
                 "POST",
                 JSON.stringify({
@@ -300,11 +302,14 @@ export default function NewDress(props: RouteComponentProps) {
         </Button>,
     ];
     return (
-        <BaseLayout
-            appBarButtons={appBarButtons}
-            rightSideButtons={rightButtons}
-        >
-            <Editor />
-        </BaseLayout>
+        <>
+            <Loader text="Your App is loading" open={isLoading}/>
+            <BaseLayout
+                appBarButtons={appBarButtons}
+                rightSideButtons={rightButtons}
+            >
+                <Editor />
+            </BaseLayout>
+        </>
     );
 }

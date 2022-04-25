@@ -32,6 +32,7 @@ import logo from "../../assets/myLogo.png";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
 import { orange } from "@mui/material/colors";
+import Footer from "./footer";
 
 const drawerWidth = 200;
 
@@ -165,7 +166,7 @@ export default function BaseLayout(props: Props) {
         return "";
     };
     return (
-        <Box sx={{ display: "flex" }}>
+        <div>
             <CssBaseline />
             <ResponsiveAppBar openFile={openFileHandler} />
 
@@ -179,6 +180,8 @@ export default function BaseLayout(props: Props) {
                 <Toolbar />
                 {props.children}
             </Box>
-        </Box>
+            <Footer/>
+
+        </div>
     );
 }

@@ -13,6 +13,7 @@ import Collection from "./pages/collection";
 import NewDress from "./pages/create";
 import Edit from "./pages/edit";
 import Home from "./pages/home";
+import Landing from "./pages/landing";
 import Order from "./pages/order";
 import { persistor, store } from "./redux/store";
 
@@ -23,10 +24,11 @@ function App() {
     
     if(!!token){routes = (
         <Router>
-            <Redirect noThrow from="*" to="/new" />
-            <NewDress path="/new" />
+            <Redirect noThrow from="*" to="/" />
+            <Landing  path="/"/>
+            {/* <NewDress path="/new" /> */}
             <Collection path="/collection"/>
-            <Edit collectionId="" path="/edit/:collectionId"/>
+            {/* <Edit collectionId="" path="/edit/:collectionId"/> */}
             <Checkout path="/checkout"/>
             <Order path="/orders"/>
         </Router>

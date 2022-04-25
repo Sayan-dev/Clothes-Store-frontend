@@ -8,6 +8,7 @@ import CompanyImage from "./dressImage";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { CartItem } from "../../types/cart";
+import Loader from "../loader/loader";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -71,6 +72,9 @@ export default function Dresses({addDressHandler, addDressToCartHandler, catagor
     },[]);
     const classes = useStyles();
     return (
+        <>
+        <Loader open={isLoading} text="Test S
+        omething" />
         <Container>
             <div className={classes.dressContainer}>
                 <Grid container>
@@ -88,5 +92,7 @@ export default function Dresses({addDressHandler, addDressToCartHandler, catagor
                 </Grid>
             </div>
         </Container>
+        </>
+
     );
 }
