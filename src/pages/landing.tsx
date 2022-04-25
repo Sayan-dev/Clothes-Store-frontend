@@ -8,18 +8,17 @@ import ProductCard from "../components/product/productCard";
 import { loadScript } from "../helpers/loadScript";
 import { useHttpClient } from "../hooks/http-hook";
 import { useAppDispatch } from "../redux/hooks";
-import { addCartItem } from "../redux/services/cart";
-import { setCanvasState } from "../redux/services/editor";
-import { CompanyDress } from "../types/dress";
+
 
 export default function Landing(props: RouteComponentProps) {
     const { isLoading, sendRequest, error } = useHttpClient();
+    const [popularItems, setPopularItems] = useState([]);
     const [items, setItems] = useState([]);
     const [state, setState] = useState({
-        catagory:{"mens":true,"womens":false,"kids":false},
+        catagory:{"mens":false,"womens":false,"kids":false},
         slider:{
             min:200,
-            val:500,
+            val:900,
             max:2000
         }
     })
@@ -36,12 +35,22 @@ export default function Landing(props: RouteComponentProps) {
     };
     useEffect(() => {
         const fetchImages = async () => {
+            try {
+                const responseData = await sendRequest(`dress/getAllCloths?listType=popular`,"POST",{});
+                setPopularItems(responseData.clothes);
+            } catch (err) {}
+        };
+        fetchImages();
+    }, [])
+    
+    useEffect(() => {
+        const fetchImages = async () => {
             const catagoryList:("mens" | "womens" | "kids")[] = []
             Object.keys(state.catagory).forEach((cat:"mens" | "womens" | "kids")=>{
                 if(state.catagory[cat])catagoryList.push(cat)
             })
             try {
-                const responseData = await sendRequest(`dress/getAllCloths`,"POST",{
+                const responseData = await sendRequest(`dress/getAllCloths?listType=latest`,"POST",{
                     catagoryList,
                     slider:state.slider
                 });
@@ -86,7 +95,7 @@ export default function Landing(props: RouteComponentProps) {
             <Grid item>
                 <h1>Popular Products</h1>
                 <Grid container>
-                    {items.map((product) => {
+                    {popularItems.map((product) => {
                         console.log(product);
 
                         return <ProductCard data={product.cloth} />;

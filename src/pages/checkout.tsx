@@ -39,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 padding: "1em 1em 1em 1em",
             },
         },
+        items:{
+            paddingLeft:"5.5em",
+
+        }
     })
 );
 export default function Checkout(props: RouteComponentProps) {
@@ -117,7 +121,7 @@ export default function Checkout(props: RouteComponentProps) {
         <Button
             color="secondary"
             variant="outlined"
-            key={"Create New"}
+            key={"Home"}
             onClick={navigateToNew}
             sx={{
                 my: 2,
@@ -125,7 +129,7 @@ export default function Checkout(props: RouteComponentProps) {
                 display: "block",
             }}
         >
-            Create New
+            Home
         </Button>,
         <Button
             color="secondary"
@@ -146,8 +150,8 @@ export default function Checkout(props: RouteComponentProps) {
         <div style={{
             marginTop:"1em"
         }}>
-            <Grid container spacing={5}>
-                <Grid className={classes.dressPreview} item xs={6}>
+            <Grid container>
+                {/* <Grid item xs={1}>
                     <Typography style={{
                         fontSize:24,
                         paddingLeft: "3em",
@@ -161,8 +165,8 @@ export default function Checkout(props: RouteComponentProps) {
                     }}>
                         <img src={final_image} />
                     </div>
-                </Grid>
-                <Grid item xs={6}>
+                </Grid> */}
+                <Grid className={classes.items} item xs={12}>
                     <Typography style={{
                         fontSize:20,
                         margin:"1em 0"

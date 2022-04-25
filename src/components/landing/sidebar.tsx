@@ -49,6 +49,7 @@ export default function Sidebar(props:props) {
                         value={userState.slider.val}
                         onChangeCommitted={handleSlider}
                         aria-label="Small"
+                        step={userState.slider.max / userState.slider.min}
                         min={userState.slider.min}
                         max={userState.slider.max}
                         valueLabelDisplay="auto"
