@@ -24,19 +24,19 @@ function App() {
     
     if(!!token){routes = (
         <Router>
-            <Redirect noThrow from="*" to="/" />
-            <Landing  path="/"/>
+            <Redirect noThrow from="*" to="cf/" />
+            <Landing  path="cf/"/>
             {/* <NewDress path="/new" /> */}
-            <Collection path="/collection"/>
+            <Collection path="cf/collection"/>
             {/* <Edit collectionId="" path="/edit/:collectionId"/> */}
-            <Checkout path="/checkout"/>
-            <Order path="/orders"/>
+            <Checkout path="cf/checkout"/>
+            <Order path="cf/orders"/>
         </Router>
     );} else {
         routes = (
             <Router>
-                <Redirect noThrow from="*" to="/auth" />
-                <Auth path="/auth" />
+                <Redirect noThrow from="*" to="cf/auth" />
+                <Auth path="cf/auth" />
             </Router>
         );
     }
