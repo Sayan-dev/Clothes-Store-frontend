@@ -1,44 +1,48 @@
 import { Button, Grid, Theme } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { navigate, RouteComponentProps } from "@reach/router";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import BaseLayout from "../components/appbar/appBar";
 import LandingScreen from "../components/landing/landingScreen";
 import Sidebar from "../components/landing/sidebar";
 import ProductCard from "../components/product/productCard";
+import { AuthContext } from "../context/auth-context";
 import { loadScript } from "../helpers/loadScript";
 import { useHttpClient } from "../hooks/http-hook";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         sidebar: {
-            [theme.breakpoints.down('md')]:{
-                display:"none"
-            }
+            [theme.breakpoints.down("md")]: {
+                display: "none",
+            },
         },
-    }))
+    })
+);
 
 export default function Landing(props: RouteComponentProps) {
     const classes = useStyles();
+    const cartData = useAppSelector((state) => state.cartReducer);
+    const { isLoggedIn, logout, user } = useContext(AuthContext);
 
     const { isLoading, sendRequest, error } = useHttpClient();
     const [popularItems, setPopularItems] = useState([]);
     const [items, setItems] = useState([]);
     const [state, setState] = useState({
-        catagory:{"mens":false,"womens":false,"kids":false},
-        slider:{
-            min:200,
-            val:900,
-            max:2000
-        }
-    })
+        catagory: { mens: false, womens: false, kids: false },
+        slider: {
+            min: 200,
+            val: 900,
+            max: 2000,
+        },
+    });
     // useEffect(() => {
     //   sendRequest("/")
     // }, [])
     const dispatch = useAppDispatch();
     const navigateToCart = () => {
-        navigate("/checkout");
+        navigate("/Clothes-Store-frontend/checkout");
         const loadRazorpayScript = async () => {
             await loadScript("https://checkout.razorpay.com/v1/checkout.js");
         };
@@ -47,24 +51,34 @@ export default function Landing(props: RouteComponentProps) {
     useEffect(() => {
         const fetchImages = async () => {
             try {
-                const responseData = await sendRequest(`dress/getAllCloths?listType=popular`,"POST",{});
+                const responseData = await sendRequest(
+                    `dress/getAllCloths?listType=popular`,
+                    "POST",
+                    {}
+                );
                 setPopularItems(responseData.clothes);
             } catch (err) {}
         };
         fetchImages();
-    }, [])
-    
+    }, []);
+
     useEffect(() => {
         const fetchImages = async () => {
-            const catagoryList:("mens" | "womens" | "kids")[] = []
-            Object.keys(state.catagory).forEach((cat:"mens" | "womens" | "kids")=>{
-                if(state.catagory[cat])catagoryList.push(cat)
-            })
+            const catagoryList: ("mens" | "womens" | "kids")[] = [];
+            Object.keys(state.catagory).forEach(
+                (cat: "mens" | "womens" | "kids") => {
+                    if (state.catagory[cat]) catagoryList.push(cat);
+                }
+            );
             try {
-                const responseData = await sendRequest(`dress/getAllCloths?listType=latest`,"POST",{
-                    catagoryList,
-                    slider:state.slider
-                });
+                const responseData = await sendRequest(
+                    `dress/getAllCloths?listType=latest`,
+                    "POST",
+                    {
+                        catagoryList,
+                        slider: state.slider,
+                    }
+                );
 
                 setItems(responseData.clothes);
             } catch (err) {}
@@ -73,34 +87,42 @@ export default function Landing(props: RouteComponentProps) {
     }, [state]);
 
     const rightButtons = [
-        <Button
-            color="secondary"
-            variant="outlined"
-            key={"go_to_cart"}
-            onClick={navigateToCart}
-            sx={{
-                my: 2,
-                mx: 5,
-                display: "block",
-            }}
-        >
-            Go to Cart
-        </Button>,
+        isLoggedIn ? (
+            <Button
+                color="secondary"
+                variant="outlined"
+                key={"go_to_cart"}
+                onClick={navigateToCart}
+                sx={{
+                    my: 2,
+                    mx: 5,
+                    display: "block",
+                }}
+            >
+                Go to Cart
+            </Button>
+        ) : null,
     ];
-    const toggleCatagory = (catagory:"mens" | "womens" | "kids")=>{
-        const newState = {...state}
-        newState.catagory[catagory] = !newState.catagory[catagory]
-        setState(newState)
-
-    }
-    const toggleSlider = (event:Event | React.SyntheticEvent<Element, Event>, value:number | number[])=>{
-        const newState = {...state}
-        if(typeof value==='number')
-            newState.slider.val = value
-        setState(newState)
-
-    }
-    const SideBar = () => <Sidebar handleSlider={toggleSlider} toggleCatagory={toggleCatagory} userState={state}/>;
+    const toggleCatagory = (catagory: "mens" | "womens" | "kids") => {
+        const newState = { ...state };
+        newState.catagory[catagory] = !newState.catagory[catagory];
+        setState(newState);
+    };
+    const toggleSlider = (
+        event: Event | React.SyntheticEvent<Element, Event>,
+        value: number | number[]
+    ) => {
+        const newState = { ...state };
+        if (typeof value === "number") newState.slider.val = value;
+        setState(newState);
+    };
+    const SideBar = () => (
+        <Sidebar
+            handleSlider={toggleSlider}
+            toggleCatagory={toggleCatagory}
+            userState={state}
+        />
+    );
     const Popular = () => (
         <Grid container direction={"column"} spacing={3}>
             <Grid item>

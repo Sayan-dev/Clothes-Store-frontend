@@ -58,7 +58,7 @@ export default function NewDress(props: RouteComponentProps) {
         }
     };
     const navigateToCollection = () => {
-        navigate("/collection");
+        navigate("/Clothes-Store-frontend/collection");
     };
     const addDressHandler = (
         uri: string | null,
@@ -264,7 +264,7 @@ export default function NewDress(props: RouteComponentProps) {
         </Button>,
     ];
     const navigateToCart = () => {
-        navigate("/checkout");
+        navigate("/Clothes-Store-frontend/checkout");
         dispatch(
             setFinalImage({
                 current_state: JSON.stringify(fabricCanvas.current),

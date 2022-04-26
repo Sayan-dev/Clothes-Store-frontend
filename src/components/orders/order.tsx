@@ -73,8 +73,9 @@ export default function OrderComponent(props:{orderData:Order}) {
   )
   return (
     <Grid container className={classes.root}>
-      <Grid item xs={12} style={{padding:"1em 0", textTransform:"capitalize", fontSize:"18px"}}>{orderData.status}</Grid>
-      <Grid item xs={8} md={7} className={classes.allItems}>
+      <Grid item xs={8} md={9} style={{padding:"1em 0", textTransform:"capitalize", fontSize:"18px"}}>Status: {orderData.status}</Grid>
+      <Grid item xs={4} md={3} style={{padding:"1em 0", textTransform:"capitalize", fontSize:"18px"}}>Rs {orderData.amount/100}</Grid>
+      <Grid item xs={12} className={classes.allItems}>
 
         {orderData.items.map(item=>{
           return(
@@ -82,11 +83,11 @@ export default function OrderComponent(props:{orderData:Order}) {
           )
         })}
       </Grid>
-      <Grid className={classes.details} item xs={4} md={5} alignItems="center" direction="column">
+      {/* <Grid className={classes.details} item xs={4} md={5} alignItems="center" direction="column">
         <Button fullWidth variant="outlined">View Details</Button>
         <Button fullWidth>Get Invoice</Button>
           
-        </Grid>
+        </Grid> */}
     </Grid>
   )
 }

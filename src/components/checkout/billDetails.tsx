@@ -1,6 +1,8 @@
+import { LoadingButton } from "@mui/lab";
 import { Box, Button, Grid, TextField, Theme, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import React, { useEffect } from "react";
+import { useHttpClient } from "../../hooks/http-hook";
 import { useAppSelector } from "../../redux/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -56,8 +58,11 @@ export interface BillDetailsType {
 export interface billDetailsProps {
     billDetails: BillDetailsType;
     onPayHandler: (e: React.FormEvent) => void;
+    handleSubmit?: (e:React.MouseEvent) => void;
 }
 export default function BillDetails(props: billDetailsProps) {
+    const {isLoading}=useHttpClient()
+    
     const classes = useStyles();
     const listItem = (name: string, value: number) => {
         return (
@@ -73,6 +78,7 @@ export default function BillDetails(props: billDetailsProps) {
             </Grid>
         );
     };
+
     return props.billDetails ? (
         <Box className={classes.summaryBackground}>
             <Box className={classes.summaryHeader}>
@@ -137,16 +143,18 @@ export default function BillDetails(props: billDetailsProps) {
                 </Grid>
             </Box>
             <Box className={classes.summaryHeader}>
-                <Button
-                    size="large"
-                    color="primary"
+                <LoadingButton
+                    loading={isLoading}
+                    loadingPosition="start"
                     type="submit"
+                    size="large"
                     form="submit-details-form"
-                    variant="contained"
+                    onClick={props.handleSubmit}
                     className={classes.summaryButton}
+                    variant="contained"
                 >
                     Proceed to Pay
-                </Button>
+            </LoadingButton>
             </Box>
         </Box>
     ) : null;

@@ -17,6 +17,7 @@ import GoogleLogin from "react-google-login";
 import { AuthContext } from "../context/auth-context";
 import { useHttpClient } from "../hooks/http-hook";
 import GoogleImage from "../assets/google.svg";
+import { LoadingButton } from "@mui/lab";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,11 +45,11 @@ const useStyles = makeStyles((theme: Theme) =>
             boxShadow: "0px 0px 30em #d3d3d3",
             height: "70vh",
             width: "50%",
-            padding:"0 2em",
+            padding:"1em 2em",
             borderRadius: "1em",
             [theme.breakpoints.down('md')]:{
                 width: "75%",
-                padding: "0 2em",
+                padding: "1em 2em",
             }
         },
         loginHeader: {
@@ -174,21 +175,23 @@ export default function Auth(props: RouteComponentProps) {
                     marginBottom: "1em",
                 }}
             />
-            <Button
-                style={{ textTransform:"capitalize", margin: "8em 0 1em 0", padding: "1em" }}
+            <LoadingButton
+                loading={isLoading}
+                loadingPosition="start"
                 type="submit"
+                style={{ textTransform:"capitalize", margin: "6em 0 1em 0", padding: "1em" }}
                 variant="contained"
-            >
+                >
                 Submit
-            </Button>
-            <Box>
+            </LoadingButton>
+            {/* <Box>
                 <Grid container>
                     <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
                     <Grid style={{textAlign:"center"}} item xs={2}><span>OR</span></Grid>
                     <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
                 </Grid>
-            </Box>
-            <Button
+            </Box> */}
+            {/* <Button
                 style={{ textTransform:"capitalize", margin: "1em 0 0.5em 0", padding: "1em" }}
                 fullWidth
                 variant="outlined"
@@ -201,7 +204,7 @@ export default function Auth(props: RouteComponentProps) {
                 <Typography style={{ textTransform: "capitalize" }}>
                     Sign in with Google
                 </Typography>
-            </Button>
+            </Button> */}
         </form>
     );
 
@@ -263,21 +266,23 @@ export default function Auth(props: RouteComponentProps) {
                     marginBottom: "1em",
                 }}
             />
-            <Button
-                style={{ textTransform:"capitalize", margin: "2em 0 1em 0", padding: "1em" }}
+            <LoadingButton
+                loading={isLoading}
+                loadingPosition="start"
                 type="submit"
+                style={{ textTransform:"capitalize", margin: "5em 0 1em 0", padding: "1em" }}
                 variant="contained"
-            >
+                >
                 Submit
-            </Button>
-            <Box>
+            </LoadingButton>
+            {/* <Box>
                 <Grid container>
                     <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
                     <Grid style={{textAlign:"center"}} item xs={2}><span>OR</span></Grid>
                     <Grid style={{alignItems:"center",justifyContent:"center"}} item xs={5}><hr/></Grid>
                 </Grid>
-            </Box>
-            <Button
+            </Box> */}
+            {/* <Button
                 style={{ textTransform:"capitalize", margin: "1em 0 0.5em 0", padding: "1em" }}
                 fullWidth
                 variant="outlined"
@@ -290,7 +295,7 @@ export default function Auth(props: RouteComponentProps) {
                 <Typography style={{ textTransform: "capitalize" }}>
                     Sign in with Google
                 </Typography>
-            </Button>
+            </Button> */}
         </form>
     );
     return (

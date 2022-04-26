@@ -37,7 +37,7 @@ export default function ImageCard(item: UserCollectionDress) {
 
     const classes = useStyles();
     const navigateToEdit = () => {
-        navigate(`/edit/${item._id}`);
+        navigate(`/Clothes-Store-frontend/edit/${item._id}`);
     };
     const deleteHandler=async ()=>{
         console.log('DELETING...');

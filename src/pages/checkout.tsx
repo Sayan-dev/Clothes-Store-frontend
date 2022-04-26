@@ -18,11 +18,11 @@ import BillDetails, {
 import { useHttpClient } from "../hooks/http-hook";
 import { AuthContext } from "../context/auth-context";
 import { createStyles, makeStyles } from "@mui/styles";
+import SuccessModal from "../components/modals/successModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         dressPreview: {
-
             "& img": {
                 width: "20em",
                 height: "20em",
@@ -38,46 +38,62 @@ const useStyles = makeStyles((theme: Theme) =>
             "& .MuiGrid-item": {
                 padding: "1em 1em 1em 1em",
             },
-            [theme.breakpoints.down('md')]:{
-                paddingLeft:"0em",
-
-
-            }
+            [theme.breakpoints.down("md")]: {
+                paddingLeft: "0em",
+            },
         },
-        items:{
-            paddingLeft:"5.5em",
-            [theme.breakpoints.down('md')]:{
-                paddingLeft:"1em",
-
-
-            }
-        }
+        items: {
+            paddingLeft: "5.5em",
+            [theme.breakpoints.down("md")]: {
+                paddingLeft: "1em",
+            },
+        },
     })
 );
 export default function Checkout(props: RouteComponentProps) {
     const classes = useStyles();
-    const { final_image } = useAppSelector(
-        (state) => state.canvasReducer
-    );
-    const { items, amount } = useAppSelector(
-        (state) => state.cartReducer
-    );
+    const { final_image } = useAppSelector((state) => state.canvasReducer);
+    const { items, amount } = useAppSelector((state) => state.cartReducer);
     const { user, token } = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const [billStructure, setBillStructure] = useState<BillDetailsType>(null);
     const [infoState, setInfoState] = useState<any>({});
+    const [interval, setintervalData] = useState(0);
+    const [successModalOpen, setSuccessModal] = useState(false)
     const navigateToNew = () => {
-        navigate("/new");
+        navigate("/Clothes-Store-frontend/new");
     };
     const navigateToOrders = () => {
-        navigate("/orders");
+        navigate("/Clothes-Store-frontend/orders");
     };
     const checkBookingStatus = (orderId: string) => {
         console.log("Booked Successfully", appBarButtons);
     };
-    const itemsArr = Object.keys(items).map((key)=>{
-        return items[key]
-    })
+    const itemsArr = Object.keys(items).map((key) => {
+        return items[key];
+    });
+    const handleSubmit = (orderId:string) => {
+        let interval = 0
+        let status
+        const refresh=setInterval(async () => {
+            status = await sendRequest(
+                `/payments/checkStatus?orderId=${orderId}`,
+                "GET",
+                null,
+                {
+                    Authorization: `Bearer ${token}`,
+                }
+            );
+            console.log(interval)
+            interval += 1
+            if (status.orderStatus === "success" ) {
+                setSuccessModal(true)
+                clearInterval(refresh)
+            }else if(interval > 5){
+                clearInterval(refresh)
+            };
+        }, 3000);
+    };
     const onPayHandler = async (event: React.FormEvent | any) => {
         event.preventDefault();
         console.log(event.target["address"].value);
@@ -87,7 +103,7 @@ export default function Checkout(props: RouteComponentProps) {
             "POST",
             {
                 amount,
-                items:itemsArr,
+                items: itemsArr,
                 address: event.target["address"].value,
                 email: event.target["email"].value,
                 phoneNo: event.target["phoneNo"].value,
@@ -114,6 +130,7 @@ export default function Checkout(props: RouteComponentProps) {
         };
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
+        handleSubmit( orderDetail.notes.orderId)
     };
 
     useEffect(() => {
@@ -156,9 +173,11 @@ export default function Checkout(props: RouteComponentProps) {
     ];
 
     const CheckoutComponents = () => (
-        <div style={{
-            marginTop:"1em"
-        }} >
+        <div
+            style={{
+                marginTop: "1em",
+            }}
+        >
             <Grid container>
                 {/* <Grid item xs={1}>
                     <Typography style={{
@@ -176,20 +195,23 @@ export default function Checkout(props: RouteComponentProps) {
                     </div>
                 </Grid> */}
                 <Grid className={classes.items} item xs={12}>
-                    <Typography style={{
-                        fontSize:20,
-                        margin:"1em 0"
-                    }}>Your Orders</Typography>
-                    <div style={{height: "25em",overflowY:"scroll"}}>
-                    {itemsArr?.map((item) => {
-                        return (
-                            <>
-                                <CheckoutItem item={item} />
-                            </>
-                        );
-                    })}
+                    <Typography
+                        style={{
+                            fontSize: 20,
+                            margin: "1em 0",
+                        }}
+                    >
+                        Your Orders
+                    </Typography>
+                    <div style={{ height: "25em", overflowY: "scroll" }}>
+                        {itemsArr?.map((item) => {
+                            return (
+                                <>
+                                    <CheckoutItem item={item} />
+                                </>
+                            );
+                        })}
                     </div>
-
                 </Grid>
             </Grid>
             <Grid container>
@@ -235,6 +257,7 @@ export default function Checkout(props: RouteComponentProps) {
     return (
         <BaseLayout appBarButtons={appBarButtons}>
             {/* <img src={final_image} alt="current"/> */}
+            <SuccessModal open={successModalOpen} handleClose={()=>setSuccessModal(false)}/>
             <Grid container spacing={2}>
                 <Grid item xs={12} md={7}>
                     <CheckoutComponents />

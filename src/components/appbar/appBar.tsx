@@ -83,6 +83,9 @@ export default function BaseLayout(props: Props) {
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const { isLoggedIn, logout, user } = React.useContext(AuthContext);
     const dispatch = useAppDispatch();
+    const navigateToLogin = () => {
+        navigate("/Clothes-Store-frontend/auth");
+    };
     const ResponsiveAppBar = () => {
         return (
             <AppBar elevation={1} position="fixed" color="primary">
@@ -133,7 +136,21 @@ export default function BaseLayout(props: Props) {
                                 </Avatar>
                             </IconButton>
                         </div>
-                    ) : null}
+                    ) : (
+                        <Button
+                            color="secondary"
+                            variant="outlined"
+                            key={"login"}
+                            onClick={navigateToLogin}
+                            sx={{
+                                my: 2,
+                                mx: 5,
+                                display: "block",
+                            }}
+                        >
+                            Login
+                        </Button>
+                    )}
                 </Toolbar>
             </AppBar>
         );
@@ -153,57 +170,52 @@ export default function BaseLayout(props: Props) {
             <AppBar elevation={1} position="fixed" color="primary">
                 <Toolbar style={{ padding: "0 4em" }}>
                     <img className={classes.logo} src={logo} alt="Logo" />
-                    {isLoggedIn ? (
-                        <Box
-                            sx={{
-                                flexGrow: 1,
-                                display: { xs: "flex" },
-                            }}
-                        >
-                            <IconButton
-                                size="large"
-                                aria-label={user.name}
-                                aria-controls="menu-appbar"
-                                aria-haspopup="true"
-                                color="secondary"
-                            >
-                                <Avatar
-                                    alt={user.name}
-                                    sx={{ bgcolor: orange[600] }}
-                                    src={user.image}
-                                >
-                                    {user.image ? undefined : user.name[0]}
-                                </Avatar>
-                            </IconButton>
-                            <Drawer
-                                anchor={"right"}
-                                open={drawer}
-                                onClose={() => setDrawer(!drawer)}
+                    <Drawer
+                        anchor={"right"}
+                        open={drawer}
+                        onClose={() => setDrawer(!drawer)}
+                        sx={{
+                            display: { xs: "block", sm: "none" },
+                            "& .MuiDrawer-paper": {
+                                boxSizing: "border-box",
+                                width: drawerWidth,
+                            },
+                        }}
+                    >
+                        {!isLoggedIn ? (
+                            <Button
+                                color="primary"
+                                variant="outlined"
+                                key={"login"}
+                                onClick={navigateToLogin}
                                 sx={{
-                                    display: { xs: "block", sm: "none" },
-                                    "& .MuiDrawer-paper": {
-                                        boxSizing: "border-box",
-                                        width: drawerWidth,
-                                    },
+                                    my: 2,
+                                    mx: 5,
+                                    display: "block",
                                 }}
                             >
-                                <Button
-                                    className={classes.logoutButton}
-                                    style={{ marginRight: "2em" }}
-                                    color="primary"
-                                    draggable
-                                    variant="outlined"
-                                    onClick={logout}
-                                >
-                                    Logout
-                                </Button>
-                                {appBarButtons?.map((button) => button)}
+                                Login
+                            </Button>
+                        ) : (
+                            <Button
+                                color="primary"
+                                variant="outlined"
+                                onClick={logout}
+                                sx={{
+                                    my: 2,
+                                    mx: 5,
+                                    display: "block",
+                                }}
+                            >
+                                Logout
+                            </Button>
+                        )}
 
-                                {rightSideButtons}
-                                {sideBar}
-                            </Drawer>
-                        </Box>
-                    ) : null}
+                        {appBarButtons?.map((button) => button)}
+
+                        {rightSideButtons}
+                        {sideBar}
+                    </Drawer>
                     <Box
                         sx={{
                             flexGrow: 1,

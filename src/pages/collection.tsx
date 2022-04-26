@@ -13,7 +13,7 @@ export default function Collection(props: RouteComponentProps) {
     const { collection } = useAppSelector((state) => state.collectionReducer);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
     const navigateToNew=()=>{
-        navigate("/new")
+        navigate("/Clothes-Store-frontend/new")
     }
     const dispatch = useAppDispatch();
     useEffect(() => {

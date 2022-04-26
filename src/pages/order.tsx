@@ -45,10 +45,10 @@ export default function Order(props: RouteComponentProps) {
     }, []);
 
     const navigateToNew = () => {
-        navigate("/new");
+        navigate("/Clothes-Store-frontend/new");
     };
     const navigateToCollection = () => {
-        navigate("/collection");
+        navigate("/Clothes-Store-frontend/collection");
     };
 
     const appBarButtons = [
@@ -63,7 +63,7 @@ export default function Order(props: RouteComponentProps) {
                 display: "block",
             }}
         >
-            Create New
+            Home
         </Button>,
         <Button
             color="secondary"
@@ -85,7 +85,6 @@ export default function Order(props: RouteComponentProps) {
                 className={classes.orderRoot}
             >
                 {orders?.map((order) => {
-                    console.log(order);
 
                     return <OrderComponent orderData={order} />;
                 })}

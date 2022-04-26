@@ -47,10 +47,10 @@ export default function NewDress(props: CanvasProps) {
     //     setCatagory(item);
     // }, []);
     const navigateToNew = ()=>{
-        navigate("/new")
+        navigate("/Clothes-Store-frontend/new")
     }
     const navigateToCollection=()=>{
-        navigate("/collection")
+        navigate("/Clothes-Store-frontend/collection")
     }
     const addDressHandler = (
         uri: string | null,
