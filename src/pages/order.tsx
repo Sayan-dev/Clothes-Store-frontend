@@ -1,4 +1,5 @@
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Grid, Theme, Typography } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
 import { navigate, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
 import BaseLayout from "../components/appbar/appBar";
@@ -7,12 +8,24 @@ import { AuthContext } from "../context/auth-context";
 import { useHttpClient } from "../hooks/http-hook";
 import { Orders } from "../types/orders";
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        orderRoot: {
+            width: "60%",
+            margin: "auto",
+            [theme.breakpoints.down("md")]: {
+                width: "100%",
 
-
+            },
+        },
+    })
+);
 export default function Order(props: RouteComponentProps) {
+    const classes = useStyles();
+
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
-    const {token} = useContext(AuthContext)
-    const [orders, setOrders] = useState<Orders>([])
+    const { token } = useContext(AuthContext);
+    const [orders, setOrders] = useState<Orders>([]);
     useEffect(() => {
         const fetchOrders = async () => {
             try {
@@ -25,19 +38,18 @@ export default function Order(props: RouteComponentProps) {
                     }
                 );
 
-                setOrders(responseData.orders)
+                setOrders(responseData.orders);
             } catch (err) {}
         };
         fetchOrders();
-    }, [])
-    
-  const navigateToNew = () => {
-    navigate("/new");
-};
-const navigateToCollection = () => {
-    navigate("/collection");
+    }, []);
 
-}
+    const navigateToNew = () => {
+        navigate("/new");
+    };
+    const navigateToCollection = () => {
+        navigate("/collection");
+    };
 
     const appBarButtons = [
         <Button
@@ -67,20 +79,22 @@ const navigateToCollection = () => {
             Collection
         </Button>,
     ];
-    const NewOrders = ()=>{
-        return(
-            <Box style={{width:"60%", margin:"auto"}}>
-                {orders?.map(order=>{
+    const NewOrders = () => {
+        return (
+            <Box
+                className={classes.orderRoot}
+            >
+                {orders?.map((order) => {
                     console.log(order);
-                    
-                    return <OrderComponent orderData={order}/>
+
+                    return <OrderComponent orderData={order} />;
                 })}
             </Box>
-        )
-    }
+        );
+    };
     return (
         <BaseLayout appBarButtons={appBarButtons}>
-            <NewOrders/>
+            <NewOrders />
         </BaseLayout>
     );
 }

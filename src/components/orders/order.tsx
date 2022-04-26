@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
           borderLeft: `1px solid ${theme.palette.primary.dark}`,
           backgroundColor: `#fbfff594`,
           padding: "1em 3em 2em 3em",
-          "& MuiGrid-item":{
+          [theme.breakpoints.down('md')]:{
+            padding: "1em 1em"
           }
         },
         allItems:{
@@ -26,6 +27,18 @@ const useStyles = makeStyles((theme: Theme) =>
           "& img":{
             width: "5em",
             height:"5.5em"
+          }
+        },
+        details:{
+          padding:"0 2em", justifyContent: "center", alignItems: "center",
+          [theme.breakpoints.down('md')]:{
+            padding: "0",
+            "& button":{
+              padding:"1em"
+            }
+          },
+          "& button":{
+            padding:"1em 2em"
           }
         }
     })
@@ -61,7 +74,7 @@ export default function OrderComponent(props:{orderData:Order}) {
   return (
     <Grid container className={classes.root}>
       <Grid item xs={12} style={{padding:"1em 0", textTransform:"capitalize", fontSize:"18px"}}>{orderData.status}</Grid>
-      <Grid item xs={7} className={classes.allItems}>
+      <Grid item xs={8} md={7} className={classes.allItems}>
 
         {orderData.items.map(item=>{
           return(
@@ -69,9 +82,9 @@ export default function OrderComponent(props:{orderData:Order}) {
           )
         })}
       </Grid>
-      <Grid item xs={5} alignItems="center" direction="column" style={{padding:"0 2em", justifyContent: "center", alignItems: "center"}}>
-        <Button style={{padding:"1em 2em"}} fullWidth variant="outlined">View Details</Button>
-        <Button style={{padding:"1em 2em"}} fullWidth>Get Invoice</Button>
+      <Grid className={classes.details} item xs={4} md={5} alignItems="center" direction="column">
+        <Button fullWidth variant="outlined">View Details</Button>
+        <Button fullWidth>Get Invoice</Button>
           
         </Grid>
     </Grid>

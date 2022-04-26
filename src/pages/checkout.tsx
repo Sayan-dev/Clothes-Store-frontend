@@ -38,10 +38,19 @@ const useStyles = makeStyles((theme: Theme) =>
             "& .MuiGrid-item": {
                 padding: "1em 1em 1em 1em",
             },
+            [theme.breakpoints.down('md')]:{
+                paddingLeft:"0em",
+
+
+            }
         },
         items:{
             paddingLeft:"5.5em",
+            [theme.breakpoints.down('md')]:{
+                paddingLeft:"1em",
 
+
+            }
         }
     })
 );
@@ -149,7 +158,7 @@ export default function Checkout(props: RouteComponentProps) {
     const CheckoutComponents = () => (
         <div style={{
             marginTop:"1em"
-        }}>
+        }} >
             <Grid container>
                 {/* <Grid item xs={1}>
                     <Typography style={{
@@ -227,17 +236,16 @@ export default function Checkout(props: RouteComponentProps) {
         <BaseLayout appBarButtons={appBarButtons}>
             {/* <img src={final_image} alt="current"/> */}
             <Grid container spacing={2}>
-                <Grid item xs={7}>
+                <Grid item xs={12} md={7}>
                     <CheckoutComponents />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={12} md={5}>
                     <BillDetails
                         billDetails={billStructure}
                         onPayHandler={onPayHandler}
                     />
                 </Grid>
             </Grid>
-            {/* <CheckoutComponents/> */}
         </BaseLayout>
     );
 }

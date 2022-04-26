@@ -24,6 +24,15 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: 0,
             height: "100vh",
             padding: 0,
+            [theme.breakpoints.down('md')]:{
+                display:"none"
+            }
+        },
+        root_second:{
+            [theme.breakpoints.down('md')]:{
+                padding: "5em 0 0 2em",
+            },
+            padding: "5em 0 0 7em",
         },
         loginImage: {
             width: "100%",
@@ -35,8 +44,12 @@ const useStyles = makeStyles((theme: Theme) =>
             boxShadow: "0px 0px 30em #d3d3d3",
             height: "70vh",
             width: "50%",
-            padding: "2em 3em",
+            padding:"0 2em",
             borderRadius: "1em",
+            [theme.breakpoints.down('md')]:{
+                width: "75%",
+                padding: "0 2em",
+            }
         },
         loginHeader: {
             fontSize: "2em",
@@ -290,11 +303,10 @@ export default function Auth(props: RouteComponentProps) {
                 />
             </Grid>
             <Grid
-                style={{
-                    padding: "5em 0 0 7em",
-                }}
                 item
-                xs={6}
+                md={6}
+                xs={12}
+                className={classes.root_second}
             >
                 <Box className={classes.loginBox}>
                     <Box className={classes.loginHeader}>

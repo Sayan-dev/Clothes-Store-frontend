@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -34,19 +34,19 @@ import { Theme } from "@mui/system";
 import { orange } from "@mui/material/colors";
 import Footer from "./footer";
 
-const drawerWidth = 200;
+const drawerWidth = 250;
 
 interface Props {
     /**
      * Injected by the documentation to work in an iframe.
      * You won't need it on your project.
      */
-    window?: () => Window;
     children: React.ReactNode;
     saveCanvas?: (event: React.MouseEvent) => void;
     editCanvas?: (event: React.MouseEvent) => void;
     appBarButtons?: React.ReactNode[];
     rightSideButtons?: React.ReactNode[];
+    sideBar?: React.ReactNode[];
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,63 +66,29 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "4em",
             marginRight: "5em",
         },
+        logoutButton: {
+            [theme.breakpoints.down("md")]: {
+                display: "none",
+            },
+        },
     })
 );
 
 export default function BaseLayout(props: Props) {
-    const { window } = props;
+    const [mobView, setMobView] = useState(false);
+    const [drawer, setDrawer] = useState(false);
     const classes = useStyles();
 
-    const { appBarButtons, rightSideButtons } = props;
+    const { appBarButtons, rightSideButtons, sideBar } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
     const { isLoggedIn, logout, user } = React.useContext(AuthContext);
     const dispatch = useAppDispatch();
-    const handleDrawerToggle = () => {
-        setMobileOpen(!mobileOpen);
-    };
-
-    const navigateToCollection = () => {
-        navigate("/collection");
-    };
-
-    const ResponsiveAppBar = (props: { openFile: () => {} }) => {
-        const fileInput = useRef(null);
-        const fileSelectHandler = () => {
-            fileInput.current.click();
-        };
+    const ResponsiveAppBar = () => {
         return (
             <AppBar elevation={1} position="fixed" color="primary">
                 <Toolbar style={{ padding: "0 4em" }}>
                     <img className={classes.logo} src={logo} alt="Logo" />
 
-                    <Box
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: "flex", md: "none" },
-                        }}
-                    >
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleDrawerToggle}
-                            color="inherit"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                    </Box>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="div"
-                        sx={{
-                            flexGrow: 1,
-                            display: { xs: "flex", md: "none" },
-                        }}
-                    >
-                        LOGO
-                    </Typography>
                     <Box
                         sx={{
                             flexGrow: 1,
@@ -142,8 +108,15 @@ export default function BaseLayout(props: Props) {
                     </Box>
                     {isLoggedIn ? (
                         <div>
-
-                            <Button style={{marginRight:"2em"}} color="secondary" variant="outlined" onClick={logout}>Logout</Button>
+                            <Button
+                                className={classes.logoutButton}
+                                style={{ marginRight: "2em" }}
+                                color="secondary"
+                                variant="outlined"
+                                onClick={logout}
+                            >
+                                Logout
+                            </Button>
                             <IconButton
                                 size="large"
                                 aria-label={user.name}
@@ -151,7 +124,13 @@ export default function BaseLayout(props: Props) {
                                 aria-haspopup="true"
                                 color="secondary"
                             >
-                                <Avatar alt={user.name} sx={{ bgcolor: orange[600] }} src={user.image} >{user.image?undefined:user.name[0]}</Avatar>
+                                <Avatar
+                                    alt={user.name}
+                                    sx={{ bgcolor: orange[600] }}
+                                    src={user.image}
+                                >
+                                    {user.image ? undefined : user.name[0]}
+                                </Avatar>
                             </IconButton>
                         </div>
                     ) : null}
@@ -159,16 +138,97 @@ export default function BaseLayout(props: Props) {
             </AppBar>
         );
     };
+    const width = window.innerWidth;
+    useEffect(() => {
+        if (width < 500) {
+            setMobView(true);
+        } else {
+            setMobView(false);
+        }
+    }, [width]);
+    console.log(mobView);
 
-    const container =
-        window !== undefined ? () => window().document.body : undefined;
-    const openFileHandler = () => {
-        return "";
+    const ResponsiveMobAppBar = () => {
+        return (
+            <AppBar elevation={1} position="fixed" color="primary">
+                <Toolbar style={{ padding: "0 4em" }}>
+                    <img className={classes.logo} src={logo} alt="Logo" />
+                    {isLoggedIn ? (
+                        <Box
+                            sx={{
+                                flexGrow: 1,
+                                display: { xs: "flex" },
+                            }}
+                        >
+                            <IconButton
+                                size="large"
+                                aria-label={user.name}
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                color="secondary"
+                            >
+                                <Avatar
+                                    alt={user.name}
+                                    sx={{ bgcolor: orange[600] }}
+                                    src={user.image}
+                                >
+                                    {user.image ? undefined : user.name[0]}
+                                </Avatar>
+                            </IconButton>
+                            <Drawer
+                                anchor={"right"}
+                                open={drawer}
+                                onClose={() => setDrawer(!drawer)}
+                                sx={{
+                                    display: { xs: "block", sm: "none" },
+                                    "& .MuiDrawer-paper": {
+                                        boxSizing: "border-box",
+                                        width: drawerWidth,
+                                    },
+                                }}
+                            >
+                                <Button
+                                    className={classes.logoutButton}
+                                    style={{ marginRight: "2em" }}
+                                    color="primary"
+                                    draggable
+                                    variant="outlined"
+                                    onClick={logout}
+                                >
+                                    Logout
+                                </Button>
+                                {appBarButtons?.map((button) => button)}
+
+                                {rightSideButtons}
+                                {sideBar}
+                            </Drawer>
+                        </Box>
+                    ) : null}
+                    <Box
+                        sx={{
+                            flexGrow: 1,
+                            display: { xs: "flex", md: "none" },
+                        }}
+                    >
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={() => setDrawer(true)}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+        );
     };
     return (
         <div>
             <CssBaseline />
-            <ResponsiveAppBar openFile={openFileHandler} />
+            {mobView ? <ResponsiveMobAppBar /> : <ResponsiveAppBar />}
 
             <Box
                 component="main"
@@ -180,8 +240,7 @@ export default function BaseLayout(props: Props) {
                 <Toolbar />
                 {props.children}
             </Box>
-            <Footer/>
-
+            <Footer />
         </div>
     );
 }

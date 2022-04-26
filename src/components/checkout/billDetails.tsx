@@ -12,6 +12,9 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "center",
             padding: "1em",
+            [theme.breakpoints.down("md")]: {
+                padding: "0.5em 0em",
+            },
         },
         billDetail: {
             margin: "0.5em 0",
@@ -21,12 +24,26 @@ const useStyles = makeStyles((theme: Theme) =>
             boxShadow: `0 0 1em ${theme.palette.secondary.dark}`,
             margin: "auto",
             backgroundColor: "#fff",
+            [theme.breakpoints.down("md")]: {
+                width: "90%",
+                padding:"1em 0em"
+            },
         },
         amountItem: {
             padding: "1em 0",
             fontWeight: 300,
 
             borderBottom: "1px solid #e1e1e1",
+        },
+        summaryButton: {
+            marginBottom: "2em",
+            width: "60%",
+            padding: "1em",
+            [theme.breakpoints.down("md")]: {
+                width: "80%",
+                marginBottom: "5em",
+
+            },
         },
     })
 );
@@ -45,13 +62,13 @@ export default function BillDetails(props: billDetailsProps) {
     const listItem = (name: string, value: number) => {
         return (
             <Grid container className={classes.amountItem}>
-                <Grid item xs={10}>
+                <Grid item xs={9} md={10}>
                     <Typography fontWeight={400} fontSize={16}>
                         {name}
                     </Typography>
                 </Grid>
-                <Grid item xs={2}>
-                &#8377;{" "}{value}
+                <Grid item xs={3} md={2}>
+                    &#8377; {value}
                 </Grid>
             </Grid>
         );
@@ -59,7 +76,7 @@ export default function BillDetails(props: billDetailsProps) {
     return props.billDetails ? (
         <Box className={classes.summaryBackground}>
             <Box className={classes.summaryHeader}>
-                <Typography style={{fontSize:24}}>Order Summary</Typography>
+                <Typography style={{ fontSize: 24 }}>Order Summary</Typography>
             </Box>
 
             <Box className={classes.summaryHeader}>
@@ -96,14 +113,24 @@ export default function BillDetails(props: billDetailsProps) {
                         <Typography>Got a Promo Code?</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Grid container justifyContent="center" alignItems="center">
-                            <Grid item xs={9}>
-                                <TextField 
-                                    placeholder="Promo Code"
-                                />
+                        <Grid
+                            container
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Grid item xs={8} md={9}>
+                                <TextField placeholder="Promo Code" />
                             </Grid>
-                            <Grid item xs={3} justifyContent="right" alignItems="end">
-                                <Button color="primary" variant="contained">Apply</Button>
+                            <Grid
+                                item
+                                xs={4}
+                                md={3}
+                                justifyContent="right"
+                                alignItems="end"
+                            >
+                                <Button color="primary" variant="contained">
+                                    Apply
+                                </Button>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -116,11 +143,7 @@ export default function BillDetails(props: billDetailsProps) {
                     type="submit"
                     form="submit-details-form"
                     variant="contained"
-                    style={{
-                        marginBottom: "2em",
-                        width:"60%",
-                        padding:"1em",
-                    }}
+                    className={classes.summaryButton}
                 >
                     Proceed to Pay
                 </Button>

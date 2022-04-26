@@ -1,4 +1,5 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Theme } from "@mui/material";
+import { createStyles, makeStyles } from "@mui/styles";
 import { navigate, RouteComponentProps } from "@reach/router";
 import React, { useEffect, useState } from "react";
 import BaseLayout from "../components/appbar/appBar";
@@ -9,8 +10,18 @@ import { loadScript } from "../helpers/loadScript";
 import { useHttpClient } from "../hooks/http-hook";
 import { useAppDispatch } from "../redux/hooks";
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        sidebar: {
+            [theme.breakpoints.down('md')]:{
+                display:"none"
+            }
+        },
+    }))
 
 export default function Landing(props: RouteComponentProps) {
+    const classes = useStyles();
+
     const { isLoading, sendRequest, error } = useHttpClient();
     const [popularItems, setPopularItems] = useState([]);
     const [items, setItems] = useState([]);
@@ -115,15 +126,15 @@ export default function Landing(props: RouteComponentProps) {
         </Grid>
     );
     return (
-        <BaseLayout rightSideButtons={rightButtons}>
+        <BaseLayout rightSideButtons={rightButtons} sideBar={[<SideBar />]}>
             <LandingScreen />
 
             <Grid container>
-                <Grid item xs={3}>
+                <Grid item xs={3} className={classes.sidebar}>
                     <SideBar />
                 </Grid>
                 <Grid item xs={1}></Grid>
-                <Grid item xs={8}>
+                <Grid item xs={11} md={8}>
                     <Popular />
                 </Grid>
             </Grid>

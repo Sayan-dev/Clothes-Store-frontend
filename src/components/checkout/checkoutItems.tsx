@@ -25,6 +25,11 @@ const useStyles = makeStyles((theme: Theme) =>
                 height: "8em",
             },
         },
+        items:{
+            [theme.breakpoints.down('md')]:{
+                paddingLeft:"1em",
+            }
+        }
     })
 );
 export default function CheckoutItem(props: CheckoutItemInterface) {
@@ -37,7 +42,7 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
     const classes = useStyles();
     return (
         <Box className={classes.root}>
-            <Paper>
+            <Paper  className={classes.items}>
                 <Grid container spacing={1}>
                     <Grid className={classes.itemImage} item md={4}>
                         <div
