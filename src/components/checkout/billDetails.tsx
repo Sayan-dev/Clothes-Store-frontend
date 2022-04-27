@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: "#fff",
             [theme.breakpoints.down("md")]: {
                 width: "90%",
-                padding:"1em 0em"
+                padding: "1em 0em",
             },
         },
         amountItem: {
@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down("md")]: {
                 width: "80%",
                 marginBottom: "5em",
-
             },
         },
     })
@@ -58,11 +57,12 @@ export interface BillDetailsType {
 export interface billDetailsProps {
     billDetails: BillDetailsType;
     onPayHandler: (e: React.FormEvent) => void;
-    handleSubmit?: (e:React.MouseEvent) => void;
+    handleSubmit?: (e: React.MouseEvent) => void;
+    loading: boolean;
+    loadingHandler?: () => void;
 }
 export default function BillDetails(props: billDetailsProps) {
-    const {isLoading}=useHttpClient()
-    
+    const {loading, loadingHandler} = props
     const classes = useStyles();
     const listItem = (name: string, value: number) => {
         return (
@@ -144,7 +144,7 @@ export default function BillDetails(props: billDetailsProps) {
             </Box>
             <Box className={classes.summaryHeader}>
                 <LoadingButton
-                    loading={isLoading}
+                    loading={loading}
                     loadingPosition="start"
                     type="submit"
                     size="large"
@@ -154,7 +154,7 @@ export default function BillDetails(props: billDetailsProps) {
                     variant="contained"
                 >
                     Proceed to Pay
-            </LoadingButton>
+                </LoadingButton>
             </Box>
         </Box>
     ) : null;

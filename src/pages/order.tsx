@@ -47,9 +47,7 @@ export default function Order(props: RouteComponentProps) {
     const navigateToNew = () => {
         navigate("/Clothes-Store-frontend/new");
     };
-    const navigateToCollection = () => {
-        navigate("/Clothes-Store-frontend/collection");
-    };
+
 
     const appBarButtons = [
         <Button
@@ -64,19 +62,6 @@ export default function Order(props: RouteComponentProps) {
             }}
         >
             Home
-        </Button>,
-        <Button
-            color="secondary"
-            variant="outlined"
-            key={"Collection"}
-            onClick={navigateToCollection}
-            sx={{
-                my: 2,
-                mx: 5,
-                display: "block",
-            }}
-        >
-            Collection
         </Button>,
     ];
     const NewOrders = () => {

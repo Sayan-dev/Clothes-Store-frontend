@@ -56,10 +56,11 @@ export default function Checkout(props: RouteComponentProps) {
     const { items, amount } = useAppSelector((state) => state.cartReducer);
     const { user, token } = useContext(AuthContext);
     const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const [loading, setLoading] = useState(false);
     const [billStructure, setBillStructure] = useState<BillDetailsType>(null);
     const [infoState, setInfoState] = useState<any>({});
     const [interval, setintervalData] = useState(0);
-    const [successModalOpen, setSuccessModal] = useState(false)
+    const [successModalOpen, setSuccessModal] = useState(false);
     const navigateToNew = () => {
         navigate("/Clothes-Store-frontend/new");
     };
@@ -72,10 +73,10 @@ export default function Checkout(props: RouteComponentProps) {
     const itemsArr = Object.keys(items).map((key) => {
         return items[key];
     });
-    const handleSubmit = (orderId:string) => {
-        let interval = 0
-        let status
-        const refresh=setInterval(async () => {
+    const handleSubmit = (orderId: string) => {
+        let interval = 0;
+        let status;
+        const refresh = setInterval(async () => {
             status = await sendRequest(
                 `/payments/checkStatus?orderId=${orderId}`,
                 "GET",
@@ -84,18 +85,21 @@ export default function Checkout(props: RouteComponentProps) {
                     Authorization: `Bearer ${token}`,
                 }
             );
-            console.log(interval)
-            interval += 1
-            if (status.orderStatus === "success" ) {
-                setSuccessModal(true)
-                clearInterval(refresh)
-            }else if(interval > 5){
-                clearInterval(refresh)
-            };
+            console.log(interval);
+            interval += 1;
+            if (status.orderStatus === "success") {
+                setSuccessModal(true);
+                setLoading(false)
+                clearInterval(refresh);
+            } else if (interval > 5) {
+                setLoading(false)
+                clearInterval(refresh);
+            }
         }, 3000);
     };
     const onPayHandler = async (event: React.FormEvent | any) => {
         event.preventDefault();
+        setLoading(true);
         console.log(event.target["address"].value);
 
         const orderDetail = await sendRequest(
@@ -130,7 +134,7 @@ export default function Checkout(props: RouteComponentProps) {
         };
         const paymentObject = new window.Razorpay(options);
         paymentObject.open();
-        handleSubmit( orderDetail.notes.orderId)
+        handleSubmit(orderDetail.notes.orderId);
     };
 
     useEffect(() => {
@@ -257,13 +261,18 @@ export default function Checkout(props: RouteComponentProps) {
     return (
         <BaseLayout appBarButtons={appBarButtons}>
             {/* <img src={final_image} alt="current"/> */}
-            <SuccessModal open={successModalOpen} handleClose={()=>setSuccessModal(false)}/>
+            <SuccessModal
+                open={successModalOpen}
+                handleClose={() => setSuccessModal(false)}
+            />
             <Grid container spacing={2}>
                 <Grid item xs={12} md={7}>
                     <CheckoutComponents />
                 </Grid>
                 <Grid item xs={12} md={5}>
                     <BillDetails
+                        loading={loading}
+                        // loadingHandler={setLoading}
                         billDetails={billStructure}
                         onPayHandler={onPayHandler}
                     />
