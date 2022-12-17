@@ -198,7 +198,6 @@ export default function NewDress(props: RouteComponentProps) {
         const canvas = JSON.stringify(fabricCanvas.current);
         try {
             const dataURL = fabricCanvas.current.toDataURL();
-            console.log(canvas);
 
             await sendRequest(
                 "dress/uploadDress",
@@ -217,11 +216,8 @@ export default function NewDress(props: RouteComponentProps) {
                 }
             );
         } catch (error) {
-            console.log(error);
         }
-        console.log(canvas);
     };
-    console.log(fabricCanvas.current?.toJSON(["id"]));
     const appBarButtons = [
         <Button
             color="secondary"

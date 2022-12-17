@@ -158,7 +158,6 @@ export default function NewDress(props: CanvasProps) {
         const canvas = JSON.stringify(fabricCanvas.current);
         try {
             const dataURL = fabricCanvas.current.toDataURL();
-            console.log(canvas);
 
             const response = await sendRequest(
                 `dress/updateDress/${collection[props.collectionId]?._id}`,
@@ -178,7 +177,6 @@ export default function NewDress(props: CanvasProps) {
         } catch (error) {
             console.log(error);
         }
-        console.log(canvas);
     };
     const appBarButtons = [
         <Button

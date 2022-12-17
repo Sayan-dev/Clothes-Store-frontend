@@ -85,7 +85,6 @@ export default function Checkout(props: RouteComponentProps) {
                     Authorization: `Bearer ${token}`,
                 }
             );
-            console.log(interval);
             interval += 1;
             if (status.orderStatus === "success") {
                 setSuccessModal(true);
@@ -100,7 +99,6 @@ export default function Checkout(props: RouteComponentProps) {
     const onPayHandler = async (event: React.FormEvent | any) => {
         event.preventDefault();
         setLoading(true);
-        console.log(event.target["address"].value);
 
         const orderDetail = await sendRequest(
             "/users/generateOrder",

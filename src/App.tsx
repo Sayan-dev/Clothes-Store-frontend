@@ -20,7 +20,6 @@ import { persistor, store } from "./redux/store";
 function App() {
     const { token, login, logout, user } = useAuth();
     let routes;
-    console.log(token);
     
     if(!!token){routes = (
         <Router>

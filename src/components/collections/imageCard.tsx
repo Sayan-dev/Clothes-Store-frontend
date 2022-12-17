@@ -40,10 +40,8 @@ export default function ImageCard(item: UserCollectionDress) {
         navigate(`/Clothes-Store-frontend/edit/${item._id}`);
     };
     const deleteHandler=async ()=>{
-        console.log('DELETING...');
         try{
           const response=await sendRequest(`dress/user/delete/${item._id}`,'DELETE')
-          console.log(response)
         }catch(error){
     
         }

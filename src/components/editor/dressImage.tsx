@@ -15,8 +15,6 @@ async function imageReceived(itemName: string) {
     context.drawImage(downloadedImg, 0, 0);
 
     try {
-        console.log("Image Uploaded", itemName, canvas.toDataURL("image/png"));
-        
         localStorage.setItem(itemName, canvas.toDataURL("image/png"));
     } catch (err) {
         console.log("Error: " + err);

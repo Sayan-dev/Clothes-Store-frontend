@@ -129,7 +129,6 @@ export default function Landing(props: RouteComponentProps) {
                 <h1>Popular Products</h1>
                 <Grid container>
                     {popularItems.map((product) => {
-                        console.log(product);
 
                         return <ProductCard data={product.cloth} />;
                     })}
@@ -139,7 +138,6 @@ export default function Landing(props: RouteComponentProps) {
                 <h1>Latest Fashion</h1>
                 <Grid container>
                     {items.map((product) => {
-                        console.log(product);
 
                         return <ProductCard data={product.cloth} />;
                     })}

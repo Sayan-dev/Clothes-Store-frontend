@@ -163,7 +163,6 @@ export default function BaseLayout(props: Props) {
             setMobView(false);
         }
     }, [width]);
-    console.log(mobView);
 
     const ResponsiveMobAppBar = () => {
         return (

@@ -42,7 +42,6 @@ export default function ProductCard(props: props) {
         e.preventDefault();
         dispatch(addCartItem({ item: { ...item, quantity: 1 } }));
     };
-    console.log(items);
     let addToCartButton = (
         <Button
             onClick={(e) => addDressToCartHandler(e, props.data)}

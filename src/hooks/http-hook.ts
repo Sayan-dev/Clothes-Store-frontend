@@ -57,13 +57,12 @@ export const useHttpClient = () => {
                 }
 
                 const responseData = response.data;
-
                 activeHttpRequests.current = activeHttpRequests.current.filter(
                     (reqCtrl) => reqCtrl !== httpAbortCtrl
                 );
 
-                if (!response.statusText) {
-                    throw new Error(responseData.message);
+                if (response.status === 500) {
+                    throw new Error("Error");
                 }
 
                 setIsLoading(false);
