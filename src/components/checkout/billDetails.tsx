@@ -1,9 +1,7 @@
 import { LoadingButton } from "@mui/lab";
 import { Box, Button, Grid, TextField, Theme, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
-import React, { useEffect } from "react";
-import { useHttpClient } from "../../hooks/http-hook";
-import { useAppSelector } from "../../redux/hooks";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,7 +60,7 @@ export interface billDetailsProps {
     loadingHandler?: () => void;
 }
 export default function BillDetails(props: billDetailsProps) {
-    const {loading, loadingHandler} = props
+    const { loading } = props;
     const classes = useStyles();
     const listItem = (name: string, value: number) => {
         return (

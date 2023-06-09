@@ -2,14 +2,13 @@ import { Box, Button, Grid, Paper, Typography } from "@mui/material";
 import { Theme } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import React from "react";
-import { CompanyDress } from "../../types/dress";
 import { useAppDispatch } from "../../redux/hooks";
 import { removeItemFromCart } from "../../redux/services/cart";
 import { CartItem } from "../../types/cart";
 
 export interface CheckoutItemInterface {
     item: CartItem;
-    removeItemFromCartHandler?: ()=>void
+    removeItemFromCartHandler?: () => void;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,24 +24,27 @@ const useStyles = makeStyles((theme: Theme) =>
                 height: "8em",
             },
         },
-        items:{
-            [theme.breakpoints.down('md')]:{
-                paddingLeft:"1em",
-            }
-        }
+        items: {
+            [theme.breakpoints.down("md")]: {
+                paddingLeft: "1em",
+            },
+        },
     })
 );
 export default function CheckoutItem(props: CheckoutItemInterface) {
     // const {removeItemFromCartHandler} = props
-    const dispatch = useAppDispatch()
-    const removeItemFromCartHandler = (e:React.MouseEvent, itemId:CartItem["_id"]) =>{
-        e.preventDefault()
-        dispatch(removeItemFromCart({itemId}))
-    }
+    const dispatch = useAppDispatch();
+    const removeItemFromCartHandler = (
+        e: React.MouseEvent,
+        itemId: CartItem["_id"]
+    ) => {
+        e.preventDefault();
+        dispatch(removeItemFromCart({ itemId }));
+    };
     const classes = useStyles();
     return (
         <Box className={classes.root}>
-            <Paper  className={classes.items}>
+            <Paper className={classes.items}>
                 <Grid container spacing={1}>
                     <Grid className={classes.itemImage} item md={4}>
                         <div
@@ -59,13 +61,24 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
                     <Grid item md={8}>
                         <Grid container>
                             <Grid item xs={8}>
-                                <Typography style={{
-                                  fontWeight: 600,
-                                  fontSize:20,
-                                }}>{props.item.name}</Typography>
+                                <Typography
+                                    style={{
+                                        fontWeight: 600,
+                                        fontSize: 20,
+                                    }}
+                                >
+                                    {props.item.name}
+                                </Typography>
                                 <Typography>
                                     Rating:{" "}
-                                    <span style={{ fontSize: 20 , fontWeight: 600}}>5.0</span>
+                                    <span
+                                        style={{
+                                            fontSize: 20,
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        5.0
+                                    </span>
                                 </Typography>
                             </Grid>
                             <Grid item xs={4}>
@@ -79,7 +92,7 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Typography>Quantity:{" "}{props.item.quantity}</Typography>
+                        <Typography>Quantity: {props.item.quantity}</Typography>
 
                         <Typography
                             style={{
@@ -91,10 +104,19 @@ export default function CheckoutItem(props: CheckoutItemInterface) {
                             Best in Syle and Quality, Freshly designed by lead
                             designers
                         </Typography>
-                        <Button style={{
-                            margin:"1em 0",
-                            padding:"0.5em"
-                        }} variant="outlined" onClick={(event)=>removeItemFromCartHandler(event,props.item._id)} color="error">Remove from Cart</Button>
+                        <Button
+                            style={{
+                                margin: "1em 0",
+                                padding: "0.5em",
+                            }}
+                            variant="outlined"
+                            onClick={(event) =>
+                                removeItemFromCartHandler(event, props.item._id)
+                            }
+                            color="error"
+                        >
+                            Remove from Cart
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>

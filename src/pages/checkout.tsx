@@ -1,15 +1,7 @@
 import { navigate, RouteComponentProps } from "@reach/router";
 import BaseLayout from "../components/appbar/appBar";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Box,
-    Button,
-    Grid,
-    Paper,
-    TextField,
-    Theme,
-    Typography,
-} from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Grid, TextField, Theme, Typography } from "@mui/material";
 import { useAppSelector } from "../redux/hooks";
 import CheckoutItem from "../components/checkout/checkoutItems";
 import BillDetails, {
@@ -52,14 +44,11 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function Checkout(props: RouteComponentProps) {
     const classes = useStyles();
-    const { final_image } = useAppSelector((state) => state.canvasReducer);
     const { items, amount } = useAppSelector((state) => state.cartReducer);
     const { user, token } = useContext(AuthContext);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { sendRequest } = useHttpClient();
     const [loading, setLoading] = useState(false);
     const [billStructure, setBillStructure] = useState<BillDetailsType>(null);
-    const [infoState, setInfoState] = useState<any>({});
-    const [interval, setintervalData] = useState(0);
     const [successModalOpen, setSuccessModal] = useState(false);
     const navigateToNew = () => {
         navigate("/Clothes-Store-frontend/new");
@@ -88,10 +77,10 @@ export default function Checkout(props: RouteComponentProps) {
             interval += 1;
             if (status.orderStatus === "success") {
                 setSuccessModal(true);
-                setLoading(false)
+                setLoading(false);
                 clearInterval(refresh);
             } else if (interval > 5) {
-                setLoading(false)
+                setLoading(false);
                 clearInterval(refresh);
             }
         }, 3000);

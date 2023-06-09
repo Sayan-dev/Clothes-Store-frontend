@@ -1,4 +1,3 @@
-import { orange } from "@mui/material/colors";
 import { createTheme } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
@@ -21,13 +20,13 @@ const theme = createTheme({
             light: "#484848",
             main: "#212121",
             dark: "#000000",
-            contrastText: "#ffffff"
+            contrastText: "#ffffff",
         },
         secondary: {
-          light: "#7da453",
-          main: "#7da453",
-          dark: "#7da453",
-          contrastText:"#000000"
+            light: "#7da453",
+            main: "#7da453",
+            dark: "#7da453",
+            contrastText: "#000000",
         },
         // Used by `getContrastText()` to maximize the contrast between
         // the background and the text.

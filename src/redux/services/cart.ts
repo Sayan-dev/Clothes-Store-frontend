@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartItem, CartItems } from "../../types/cart";
-import { CompanyDress, UserCollectionDress } from "../../types/dress";
 
 interface Cart_State {
     loading: boolean;
@@ -20,27 +19,28 @@ const cartSlice = createSlice({
     reducers: {
         addCartItem(state, action: PayloadAction<{ item: CartItem }>) {
             const { item } = action.payload;
-            
-            state.items[item._id] = item
 
-            let newAmount = 0
-            Object.keys(state.items).forEach((key)=>{
-                newAmount += (state.items[key].price * state.items[key].quantity)
-            })
-            state.amount = newAmount
+            state.items[item._id] = item;
 
+            let newAmount = 0;
+            Object.keys(state.items).forEach((key) => {
+                newAmount += state.items[key].price * state.items[key].quantity;
+            });
+            state.amount = newAmount;
         },
-        removeItemFromCart(state, action: PayloadAction<{ itemId: CartItem["_id"] }>){
-            if(state.items[action.payload.itemId]){
-
-                delete state.items[action.payload.itemId]
+        removeItemFromCart(
+            state,
+            action: PayloadAction<{ itemId: CartItem["_id"] }>
+        ) {
+            if (state.items[action.payload.itemId]) {
+                delete state.items[action.payload.itemId];
             }
-            let newAmount = 0
-            Object.keys(state.items).forEach((key)=>{
-                newAmount += (state.items[key].price * state.items[key].quantity)
-            })
-            state.amount = newAmount
-        }
+            let newAmount = 0;
+            Object.keys(state.items).forEach((key) => {
+                newAmount += state.items[key].price * state.items[key].quantity;
+            });
+            state.amount = newAmount;
+        },
     },
 });
 

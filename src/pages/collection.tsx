@@ -11,10 +11,10 @@ import { setCollection } from "../redux/services/collection";
 export default function Collection(props: RouteComponentProps) {
     const { user } = useContext(AuthContext);
     const { collection } = useAppSelector((state) => state.collectionReducer);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
-    const navigateToNew=()=>{
-        navigate("/Clothes-Store-frontend/new")
-    }
+    const { sendRequest } = useHttpClient();
+    const navigateToNew = () => {
+        navigate("/Clothes-Store-frontend/new");
+    };
     const dispatch = useAppDispatch();
     useEffect(() => {
         const fetchDresses = async () => {
@@ -53,7 +53,7 @@ export default function Collection(props: RouteComponentProps) {
             }}
         >
             Create New
-        </Button>
+        </Button>,
     ];
     return (
         <BaseLayout appBarButtons={appBarButtons} saveCanvas={() => {}}>

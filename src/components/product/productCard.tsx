@@ -6,7 +6,7 @@ import { AuthContext } from "../../context/auth-context";
 import { useAppSelector } from "../../redux/hooks";
 import { addCartItem } from "../../redux/services/cart";
 import { CompanyDress } from "../../types/dress";
-import LoginModal from "../modals/loginModal"
+import LoginModal from "../modals/loginModal";
 
 interface props {
     data?: CompanyDress;
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 export default function ProductCard(props: props) {
     const classes = useStyles();
-    const { isLoggedIn, logout, user } = useContext(AuthContext);
+    const { isLoggedIn } = useContext(AuthContext);
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -60,19 +60,16 @@ export default function ProductCard(props: props) {
                 Added to Cart
             </Button>
         );
-    } else if(!isLoggedIn){
+    } else if (!isLoggedIn) {
         addToCartButton = (
-            <Button
-                onClick={handleOpen}
-                variant="contained"
-            >
+            <Button onClick={handleOpen} variant="contained">
                 Add to Cart
             </Button>
         );
     }
     return (
         <>
-            <LoginModal open={open} handleClose={handleClose}/>
+            <LoginModal open={open} handleClose={handleClose} />
             <Card className={classes.card}>
                 <div className={classes.mediadiv}>
                     <CardMedia

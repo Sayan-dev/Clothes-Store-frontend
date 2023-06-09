@@ -9,7 +9,6 @@ import ProductCard from "../components/product/productCard";
 import { AuthContext } from "../context/auth-context";
 import { loadScript } from "../helpers/loadScript";
 import { useHttpClient } from "../hooks/http-hook";
-import { useAppDispatch, useAppSelector } from "../redux/hooks";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,10 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export default function Landing(props: RouteComponentProps) {
     const classes = useStyles();
-    const cartData = useAppSelector((state) => state.cartReducer);
-    const { isLoggedIn, logout, user } = useContext(AuthContext);
+    const { isLoggedIn } = useContext(AuthContext);
 
-    const { isLoading, sendRequest, error } = useHttpClient();
+    const { sendRequest } = useHttpClient();
     const [popularItems, setPopularItems] = useState([]);
     const [items, setItems] = useState([]);
     const [state, setState] = useState({
@@ -40,7 +38,6 @@ export default function Landing(props: RouteComponentProps) {
     // useEffect(() => {
     //   sendRequest("/")
     // }, [])
-    const dispatch = useAppDispatch();
     const navigateToCart = () => {
         navigate("/Clothes-Store-frontend/checkout");
         const loadRazorpayScript = async () => {
@@ -129,7 +126,6 @@ export default function Landing(props: RouteComponentProps) {
                 <h1>Popular Products</h1>
                 <Grid container>
                     {popularItems.map((product) => {
-
                         return <ProductCard data={product.cloth} />;
                     })}
                 </Grid>
@@ -138,7 +134,6 @@ export default function Landing(props: RouteComponentProps) {
                 <h1>Latest Fashion</h1>
                 <Grid container>
                     {items.map((product) => {
-
                         return <ProductCard data={product.cloth} />;
                     })}
                 </Grid>

@@ -1,19 +1,8 @@
-import {
-    Box,
-    Button,
-    Divider,
-    FormControl,
-    FormControlLabel,
-    Grid,
-    Paper,
-    TextField,
-    Typography,
-} from "@mui/material";
+import { Box, Button, Grid, TextField } from "@mui/material";
 import { Theme } from "@mui/system";
 import { createStyles, makeStyles } from "@mui/styles";
 import { RouteComponentProps } from "@reach/router";
 import React, { useContext, useState } from "react";
-import GoogleLogin from "react-google-login";
 import { AuthContext } from "../context/auth-context";
 import { useHttpClient } from "../hooks/http-hook";
 import GoogleImage from "../assets/google.svg";
@@ -25,12 +14,12 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: 0,
             height: "100vh",
             padding: 0,
-            [theme.breakpoints.down('md')]:{
-                display:"none"
-            }
+            [theme.breakpoints.down("md")]: {
+                display: "none",
+            },
         },
-        root_second:{
-            [theme.breakpoints.down('md')]:{
+        root_second: {
+            [theme.breakpoints.down("md")]: {
                 padding: "5em 0 0 2em",
             },
             padding: "5em 0 0 7em",
@@ -45,22 +34,22 @@ const useStyles = makeStyles((theme: Theme) =>
             boxShadow: "0px 0px 30em #d3d3d3",
             height: "70vh",
             width: "50%",
-            padding:"1em 2em",
+            padding: "1em 2em",
             borderRadius: "1em",
-            [theme.breakpoints.down('md')]:{
+            [theme.breakpoints.down("md")]: {
                 width: "75%",
                 padding: "1em 2em",
-            }
+            },
         },
         loginHeader: {
             fontSize: "2em",
             fontWeight: 300,
             marginBottom: "2em",
             "& button": {
-                padding:"1em 2em",
-                fontSize:18,
+                padding: "1em 2em",
+                fontSize: 18,
                 borderRadius: "1em",
-                textTransform:"capitalize"
+                textTransform: "capitalize",
             },
         },
         loginBody: {
@@ -89,7 +78,7 @@ interface SignupState {
 export default function Auth(props: RouteComponentProps) {
     const userAuth = useContext(AuthContext);
     const [isLogin, setIsLogin] = useState(true);
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { isLoading, sendRequest } = useHttpClient();
     const [values, setValues] = useState<State>({
         email: "",
         password: "",
@@ -179,9 +168,13 @@ export default function Auth(props: RouteComponentProps) {
                 loading={isLoading}
                 loadingPosition="start"
                 type="submit"
-                style={{ textTransform:"capitalize", margin: "6em 0 1em 0", padding: "1em" }}
+                style={{
+                    textTransform: "capitalize",
+                    margin: "6em 0 1em 0",
+                    padding: "1em",
+                }}
                 variant="contained"
-                >
+            >
                 Submit
             </LoadingButton>
             {/* <Box>
@@ -270,9 +263,13 @@ export default function Auth(props: RouteComponentProps) {
                 loading={isLoading}
                 loadingPosition="start"
                 type="submit"
-                style={{ textTransform:"capitalize", margin: "5em 0 1em 0", padding: "1em" }}
+                style={{
+                    textTransform: "capitalize",
+                    margin: "5em 0 1em 0",
+                    padding: "1em",
+                }}
                 variant="contained"
-                >
+            >
                 Submit
             </LoadingButton>
             {/* <Box>
@@ -307,16 +304,19 @@ export default function Auth(props: RouteComponentProps) {
                     src="https://images.unsplash.com/photo-1553095066-5014bc7b7f2d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8d2FsbCUyMGJhY2tncm91bmR8ZW58MHx8MHx8&w=1000&q=80"
                 />
             </Grid>
-            <Grid
-                item
-                md={6}
-                xs={12}
-                className={classes.root_second}
-            >
+            <Grid item md={6} xs={12} className={classes.root_second}>
                 <Box className={classes.loginBox}>
                     <Box className={classes.loginHeader}>
-                        <Button variant={isLogin?"contained":"text"} onClick={() => setIsLogin(true)}>Login</Button>
-                        <Button variant={isLogin?"text":"contained"} onClick={() => setIsLogin(false)}>
+                        <Button
+                            variant={isLogin ? "contained" : "text"}
+                            onClick={() => setIsLogin(true)}
+                        >
+                            Login
+                        </Button>
+                        <Button
+                            variant={isLogin ? "text" : "contained"}
+                            onClick={() => setIsLogin(false)}
+                        >
                             SignUp
                         </Button>
                     </Box>

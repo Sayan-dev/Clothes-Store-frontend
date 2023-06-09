@@ -21,46 +21,59 @@ const useStyles = makeStyles((theme: Theme) =>
             "&:hover": {
                 cursor: "pointer",
             },
-
         },
-        actionButtons:{
-            margin:"1em 0"
+        actionButtons: {
+            margin: "1em 0",
         },
-        cardItems:{
-            margin:"1em 0"
-
-        }
+        cardItems: {
+            margin: "1em 0",
+        },
     })
 );
 export default function ImageCard(item: UserCollectionDress) {
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { sendRequest } = useHttpClient();
 
     const classes = useStyles();
     const navigateToEdit = () => {
         navigate(`/Clothes-Store-frontend/edit/${item._id}`);
     };
-    const deleteHandler=async ()=>{
-        try{
-          const response=await sendRequest(`dress/user/delete/${item._id}`,'DELETE')
-        }catch(error){
-    
-        }
-    
-        // console.log("Deleted Successfully")
-    
-      }
+    const deleteHandler = async () => {
+        try {
+            await sendRequest(`dress/user/delete/${item._id}`, "DELETE");
+        } catch (error) {}
+    };
     return (
         <Card key={item._id} className={classes.root}>
             <img src={item.image} alt={item.name} />
             <Grid container className={classes.cardItems}>
-                <Grid item xs={6} >{item.name}</Grid>
+                <Grid item xs={6}>
+                    {item.name}
+                </Grid>
 
-                <Grid item xs={6}>Rs {item.price}</Grid>
+                <Grid item xs={6}>
+                    Rs {item.price}
+                </Grid>
             </Grid>
             <Grid container className={classes.actionButtons}>
-                <Grid alignItems="center" justifyContent="center" item xs={6}><Button onClick={navigateToEdit} variant="contained" color="primary">Edit</Button></Grid>
+                <Grid alignItems="center" justifyContent="center" item xs={6}>
+                    <Button
+                        onClick={navigateToEdit}
+                        variant="contained"
+                        color="primary"
+                    >
+                        Edit
+                    </Button>
+                </Grid>
 
-                <Grid alignItems="center" justifyContent="center" item xs={6}><Button onClick = {deleteHandler}variant="contained" color="error">Delete</Button></Grid>
+                <Grid alignItems="center" justifyContent="center" item xs={6}>
+                    <Button
+                        onClick={deleteHandler}
+                        variant="contained"
+                        color="error"
+                    >
+                        Delete
+                    </Button>
+                </Grid>
             </Grid>
         </Card>
     );

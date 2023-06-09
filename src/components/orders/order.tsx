@@ -1,8 +1,8 @@
-import { Button, Grid, Paper, Theme, Typography } from "@mui/material";
+import { Grid, Theme, Typography } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import React from "react";
 import { CartItem } from "../../types/cart";
-import { Order, Orders } from "../../types/orders";
+import { Order } from "../../types/orders";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -68,17 +68,6 @@ export default function OrderComponent(props: { orderData: Order }) {
                     {item.name}
                 </Typography>
                 <Typography>Quantity: {item.quantity}</Typography>
-            </Grid>
-        </Grid>
-    );
-    const OrderDetails = () => (
-        <Grid container>
-            <Grid item>
-                {orderData.notes.email}
-                {orderData.amount}
-                {orderData.notes.address}
-                {new Date(orderData.createdAt).toString()}
-                {orderData.amount}
             </Grid>
         </Grid>
     );

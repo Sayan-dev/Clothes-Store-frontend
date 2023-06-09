@@ -2,32 +2,13 @@ import React, { useEffect, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import {
-    Avatar,
-    Button,
-    Container,
-    Menu,
-    MenuItem,
-    Tooltip,
-} from "@mui/material";
-import { useRef } from "react";
-import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { Avatar, Button } from "@mui/material";
 import { AuthContext } from "../../context/auth-context";
 import { navigate } from "@reach/router";
-import { loadScript } from "../../helpers/loadScript";
-import { setFinalImage } from "../../redux/services/editor";
 import logo from "../../assets/myLogo.png";
 import { createStyles, makeStyles } from "@mui/styles";
 import { Theme } from "@mui/system";
@@ -80,9 +61,7 @@ export default function BaseLayout(props: Props) {
     const classes = useStyles();
 
     const { appBarButtons, rightSideButtons, sideBar } = props;
-    const [mobileOpen, setMobileOpen] = React.useState(false);
     const { isLoggedIn, logout, user } = React.useContext(AuthContext);
-    const dispatch = useAppDispatch();
     const navigateToLogin = () => {
         navigate("/Clothes-Store-frontend/auth");
     };

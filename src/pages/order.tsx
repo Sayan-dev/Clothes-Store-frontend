@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Theme, Typography } from "@mui/material";
+import { Box, Button, Theme } from "@mui/material";
 import { createStyles, makeStyles } from "@mui/styles";
 import { navigate, RouteComponentProps } from "@reach/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: "auto",
             [theme.breakpoints.down("md")]: {
                 width: "100%",
-
             },
         },
     })
@@ -23,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export default function Order(props: RouteComponentProps) {
     const classes = useStyles();
 
-    const { isLoading, error, sendRequest, clearError } = useHttpClient();
+    const { sendRequest } = useHttpClient();
     const { token } = useContext(AuthContext);
     const [orders, setOrders] = useState<Orders>([]);
     useEffect(() => {
@@ -48,7 +47,6 @@ export default function Order(props: RouteComponentProps) {
         navigate("/Clothes-Store-frontend/new");
     };
 
-
     const appBarButtons = [
         <Button
             color="secondary"
@@ -66,11 +64,8 @@ export default function Order(props: RouteComponentProps) {
     ];
     const NewOrders = () => {
         return (
-            <Box
-                className={classes.orderRoot}
-            >
+            <Box className={classes.orderRoot}>
                 {orders?.map((order) => {
-
                     return <OrderComponent orderData={order} />;
                 })}
             </Box>
